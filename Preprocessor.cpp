@@ -34,7 +34,7 @@ Mat Preprocessor::segment(Mat im){
         int G=rgbspace.val[1];
         int R=rgbspace.val[2];
         
-        if(!(G > R+5 && G > B+5))
+        if(!(G > R+1 && G > B+1))
             *it = Vec3b(255,255,255);
     }
     

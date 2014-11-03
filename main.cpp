@@ -8,12 +8,13 @@
 
 #include "Preprocessor.cpp"
 #include "Greenness.cpp"
+#include "Biomass.cpp"
 
 using namespace cv;
 
 int main(int argc, char *argv[]){
     Mat src;
-    src = imread("/Users/janvillarosa/Pictures/sample.jpg",1);
+    src = imread("/Users/janvillarosa/Dropbox/Butil - IRRI Project/Images/10-30-2014/IR64-043.JPG",1);
     imshow("Original",src);
     Preprocessor pp_instance;
     pp_instance.setSrc(src);
@@ -21,5 +22,8 @@ int main(int argc, char *argv[]){
     
     Greenness g_instance;
     g_instance.greenness(filtered);
+    
+    Biomass b_instance;
+    b_instance.getPlantWidth(filtered);
     waitKey();
 }
