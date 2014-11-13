@@ -80,3 +80,54 @@ Mat Preprocessor::whiteBal(){
     }
     return Mat();
 }
+
+Mat Preprocessor::cropImage(Mat image){
+    int leftBound = 0;
+    int rightBound = 0;
+    int threshold = 250;
+    int i = 0;
+    int k = 0;
+
+    imshow("Old Crop", image);
+
+    while (leftBound <= threshold && i<image.cols - 1){
+        leftBound = 0;
+        for (int j = 0; j < image.rows; ++j)
+        {
+            if (image.at<uchar>(j, i) != 255)
+            {
+                leftBound++;
+
+            }
+            else
+            {
+            }
+        }
+
+        i++;
+    }
+
+    k = image.cols - 1;
+
+    while (rightBound <= threshold && k >= 0){
+        rightBound = 0;
+
+        for (int j = 0; j < image.rows; ++j)
+        {
+            if (image.at<uchar>(j, k) != 255)
+            {
+                rightBound++;
+            }
+            else
+            {
+            }
+        }
+        k--;
+    }
+    Rect roi(i, 0, k - i, 300);
+    Mat image_roi = image(roi);
+    image_roi.copyTo(image);
+    //imshow("New Crop",image);
+
+    return image;
+}
