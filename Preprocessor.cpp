@@ -10,23 +10,6 @@
 
 using namespace cv;
 
-class WatershedSegmenter{
-private:
-    cv::Mat markers;
-public:
-    void setMarkers(cv::Mat& markerImage)
-    {
-        markerImage.convertTo(markers, CV_32S);
-    }
-    
-    cv::Mat process(cv::Mat &image)
-    {
-        cv::watershed(image, markers);
-        markers.convertTo(markers,CV_8U);
-        return markers;
-    }
-};
-
 class Preprocessor{
     Mat src;
     
@@ -35,6 +18,7 @@ class Preprocessor{
         Mat noisefilter(Mat);
         Mat whiteBal();
         void setSrc(Mat);
+    Mat cropImage(Mat);
 };
 
 void Preprocessor::setSrc(Mat source){
@@ -100,7 +84,7 @@ Mat Preprocessor::noisefilter(Mat im){
     dilate( image, image, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)) );
     erode(image, image, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)) );
 
-    
+    imwrite("/Users/janvillarosa/Documents/Luntian/Pre-processed/IR64-055.JPG", image);
     return image;
 }
 
@@ -135,8 +119,6 @@ Mat Preprocessor::cropImage(Mat image){
     int threshold = 250;
     int i = 0;
     int k = 0;
-
-    imshow("Old Crop", image);
 
     while (leftBound <= threshold && i<image.cols - 1){
         leftBound = 0;
