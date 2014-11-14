@@ -22,8 +22,8 @@ int main(int argc, char *argv[]){
     
     Greenness g_instance;
     g_instance.greenness(filtered);
-    
+
     Biomass b_instance;
-    b_instance.getPlantWidth(filtered);
+    b_instance.getPlantWidth(pp_instance.cropImage(filtered));
     waitKey();
 }
