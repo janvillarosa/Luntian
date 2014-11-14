@@ -1,4 +1,4 @@
-//
+ //
 //  Greenness module for determining greenness of plant
 //  OpenCVDEmo
 //

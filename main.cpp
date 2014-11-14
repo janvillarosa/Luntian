@@ -8,13 +8,13 @@
 
 #include "Preprocessor.cpp"
 #include "Greenness.cpp"
-#include "Biomass.cpp"
+#include "Biomass Obj.cpp"
 
 using namespace cv;
 
 int main(int argc, char *argv[]){
     Mat src;
-    src = imread("/Users/janvillarosa/Dropbox/Butil - IRRI Project/Images/10-30-2014/IR64-043.JPG",1);
+    src = imread("/Users/janvillarosa/Desktop/IR64-055.JPG",1);
     imshow("Original",src);
     Preprocessor pp_instance;
     pp_instance.setSrc(src);

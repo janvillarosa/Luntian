@@ -10,6 +10,23 @@
 
 using namespace cv;
 
+class WatershedSegmenter{
+private:
+    cv::Mat markers;
+public:
+    void setMarkers(cv::Mat& markerImage)
+    {
+        markerImage.convertTo(markers, CV_32S);
+    }
+    
+    cv::Mat process(cv::Mat &image)
+    {
+        cv::watershed(image, markers);
+        markers.convertTo(markers,CV_8U);
+        return markers;
+    }
+};
+
 class Preprocessor{
     Mat src;
     
@@ -25,35 +42,66 @@ void Preprocessor::setSrc(Mat source){
 }
 
 Mat Preprocessor::segment(Mat im){
-    Mat3b image=im.clone();
+
+    Mat3b image;
+    Mat3b orig = im.clone();
     Mat result;
     
-    for (Mat3b::iterator it = image.begin(); it != image.end(); it++) {
-        Vec3b rgbspace = *it;
-        int B=rgbspace.val[0];
-        int G=rgbspace.val[1];
-        int R=rgbspace.val[2];
+    int iLowH = 22;
+    int iHighH = 75;
+    
+    int iLowS = 60;
+    int iHighS = 255;
+    
+    int iLowV = 30;
+    int iHighV = 255;
+    
+    cvtColor(im,image,CV_BGR2HSV);
+    
+    Mat imgThresholded;
+    
+    inRange(image, Scalar(iLowH, iLowS, iLowV), Scalar(iHighH, iHighS, iHighV), imgThresholded); //Threshold the image
+    
+    //opening (remove small objects from the foreground)
+    erode(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
+    dilate( imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
+    
+    //closing (fill small holes in the foreground)
+    dilate( imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
+    erode(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
+    
+    imshow("Thresholded Image", imgThresholded);
+    cvtColor(imgThresholded, imgThresholded, CV_GRAY2BGR);
+    bitwise_and(imgThresholded, orig, orig);
+    
+    for (Mat3b::iterator it = orig.begin(); it != orig.end(); it++) {
+        Vec3b hsv = *it;
+        int B=hsv.val[0];
+        int G=hsv.val[1];
+        int R=hsv.val[2];
         
-        if(!(G > R+1 && G > B+1))
+        if((B == 0 && G == 0 && R == 0)){
             *it = Vec3b(255,255,255);
+        } else {
+        }
     }
     
-    return image;
+    return orig;
 }
 
 Mat Preprocessor::noisefilter(Mat im){
     Mat3b image = im.clone();
-    Mat3b image2;
     
-    Mat element = getStructuringElement( MORPH_ELLIPSE,
-                                        Size( 2 , 2 ),
-                                        Point( 1, 1 ) );
+    //opening (remove small objects from the foreground)
+    erode(image, image, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)) );
+    dilate( image, image, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)) );
     
-    dilate(image,image2,element, Point(-1, -1), 2, 1, 1);
-    erode(image2,image2,element, Point(-1, -1), 2, 1, 1);
+    //closing (fill small holes in the foreground)
+    dilate( image, image, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)) );
+    erode(image, image, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)) );
 
     
-    return image2;
+    return image;
 }
 
 Mat Preprocessor::whiteBal(){
