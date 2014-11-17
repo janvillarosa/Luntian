@@ -49,14 +49,24 @@ Mat Preprocessor::rgb_segment(Mat imgThreshold, Mat im){
     return orig;
 }
 
-Mat Preprocessor::bin_segment(Mat imgThreshold){
-    Mat imgThresholded;
-    Mat orig;
+Mat Preprocessor::bin_segment(Mat wBal){
+    Rect roi(600, 2300, 700, 300); //temporary placement
+    Mat src_roi = wBal(roi);        //crops lower portion of the plant for further processing
+    src_roi.copyTo(wBal);      // processed image will be cropped at the sides using cropImage()
     
-    cvtColor(imgThreshold, imgThresholded, CV_GRAY2BGR);
-    bitwise_not(imgThresholded, orig);
+    Mat src_gray;                               //temporary placement
+    cvtColor(wBal, src_gray, CV_RGB2GRAY);  //of this code block
+    threshold(src_gray, wBal, 170, 255, 0); //here. Code runs.
     
-    return orig;
+    //opening (remove small objects from the foreground)
+    erode(wBal, wBal, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
+    dilate( wBal, wBal, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
+    
+    //closing (fill small holes in the foreground)
+    dilate( wBal, wBal, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
+    erode(wBal, wBal, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
+    
+    return wBal;
 }
 
 Mat Preprocessor::segment(Mat im){
