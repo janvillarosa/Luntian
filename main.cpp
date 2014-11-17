@@ -29,21 +29,22 @@ int main(int argc, char *argv[]){
     Greenness g_instance;
     g_instance.greenness(green_segment);
 
-<<<<<<< HEAD
     //Biomass b_instance;
     //b_instance.getPlantWidth(biomass_segment);
-=======
+    
     Rect roi(600, 2300, 700, 300); //temporary placement
-    Mat src_roi = src(roi);        //crops lower portion of the plant for further processing
-    src_roi.copyTo(filtered);      // processed image will be cropped at the sides using cropImage()
-
+    Mat src_roi = biomass_segment(roi);        //crops lower portion of the plant for further processing
+    src_roi.copyTo(biomass_segment);      // processed image will be cropped at the sides using cropImage()
+    
+    /*
     Mat src_gray;                               //temporary placement
     cvtColor(filtered, src_gray, CV_RGB2GRAY);  //of this code block
     threshold(src_gray, filtered, 170, 255, 0); //here. Code runs.
-
+     */
+    
     Biomass b_instance;
-    b_instance.getPlantWidth(pp_instance.cropImage(filtered));
+    int aveWidth = b_instance.getPlantWidth(biomass_segment);
     cout << aveWidth << endl;
->>>>>>> FETCH_HEAD
+
     waitKey();
 }

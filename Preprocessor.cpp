@@ -56,6 +56,8 @@ Mat Preprocessor::bin_segment(Mat imgThreshold){
     cvtColor(imgThreshold, imgThresholded, CV_GRAY2BGR);
     bitwise_not(imgThresholded, orig);
     
+    imwrite("/Users/janvillarosa/Documents/Luntian/Pre-processed/bw.JPG", orig);
+    
     return orig;
 }
 
