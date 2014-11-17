@@ -175,7 +175,7 @@ Mat Preprocessor::cropImage(Mat image){
     Rect roi(i, 0, k - i, 300);
     Mat image_roi = image(roi);
     image_roi.copyTo(image);
-    //imshow("New Crop",image);
+    imshow("New Crop",image);
 
     return image;
 }
