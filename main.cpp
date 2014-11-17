@@ -16,6 +16,13 @@ using namespace std;
 
 int main(int argc, char *argv[]){
     Mat src;
+<<<<<<< Updated upstream
+=======
+    src = imread("/Users/janvillarosa/Desktop/IR64-001.JPG",1);
+    Preprocessor pp_instance;
+    pp_instance.setSrc(src);
+    Mat wBal = pp_instance.whiteBal();
+>>>>>>> Stashed changes
     
     for (int i = 1; i < 61; i++){
         string x = "/Users/janvillarosa/Butil - IRRI Project/Images/10-30-2014/IR64-0";
