@@ -16,7 +16,18 @@ using namespace std;
 
 int main(int argc, char *argv[]){
     Mat src;
-    src = imread("/Users/janvillarosa/Desktop/IR64-002.JPG",1);
+    
+    for (int i = 1; i < 61; i++){
+    string x = "/Users/janvillarosa/Butil - IRRI Project/Images/10-30-2014/IR64-0";
+    if (i < 10){
+        x.append("0");
+    }
+    x.append(to_string(i));
+    x.append(".JPG");
+    if (src.empty() == false){
+        src = imread(x, 1);
+    }
+    
     Preprocessor pp_instance;
     pp_instance.setSrc(src);
     Mat wBal = pp_instance.whiteBal();
