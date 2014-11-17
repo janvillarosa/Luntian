@@ -84,7 +84,7 @@ Mat Greenness::greenness(Mat im){
     sprintf(name,"Pixels=%d",pixelct);
     putText(image,name, Point(20,160) , FONT_HERSHEY_SIMPLEX, .7, Scalar(0,0,0), 2,8,false );
     
-    sprintf(name,"LCC Value between %d and %d",lccval-1,lccval);
+    sprintf(name,"LCC Value: %d", lccval);
     putText(image,name, Point(20,200) , FONT_HERSHEY_SIMPLEX, .7, Scalar(0,0,0), 2,8,false );
     
     return image;

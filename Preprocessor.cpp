@@ -59,12 +59,12 @@ Mat Preprocessor::bin_segment(Mat wBal){
     threshold(src_gray, wBal, 170, 255, 0); //here. Code runs.
     
     //opening (remove small objects from the foreground)
-    erode(wBal, wBal, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
-    dilate( wBal, wBal, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
+    erode(wBal, wBal, getStructuringElement(MORPH_ELLIPSE, Size(7, 7)) );
+    dilate( wBal, wBal, getStructuringElement(MORPH_ELLIPSE, Size(7, 7)) );
     
     //closing (fill small holes in the foreground)
-    dilate( wBal, wBal, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
-    erode(wBal, wBal, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
+    dilate( wBal, wBal, getStructuringElement(MORPH_ELLIPSE, Size(7, 7)) );
+    erode(wBal, wBal, getStructuringElement(MORPH_ELLIPSE, Size(7, 7)) );
     
     return wBal;
 }
@@ -91,12 +91,12 @@ Mat Preprocessor::segment(Mat im){
     inRange(image, Scalar(iLowH, iLowS, iLowV), Scalar(iHighH, iHighS, iHighV), imgThresholded); //Threshold the image
     
     //opening (remove small objects from the foreground)
-    erode(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
-    dilate( imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
+    erode(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(7, 7)) );
+    dilate( imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(7, 7)) );
     
     //closing (fill small holes in the foreground)
-    dilate( imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
-    erode(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
+    dilate( imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(7, 7)) );
+    erode(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(7, 7)) );
     
     return imgThresholded;
 }
@@ -105,18 +105,19 @@ Mat Preprocessor::noisefilter(Mat im){
     Mat3b image = im.clone();
     
     //opening (remove small objects from the foreground)
-    erode(image, image, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
-    dilate( image, image, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
+    erode(image, image, getStructuringElement(MORPH_ELLIPSE, Size(7, 7)) );
+    dilate( image, image, getStructuringElement(MORPH_ELLIPSE, Size(7, 7)) );
     
     //closing (fill small holes in the foreground)
-    dilate( image, image, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
-    erode(image, image, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
+    dilate( image, image, getStructuringElement(MORPH_ELLIPSE, Size(7, 7)) );
+    erode(image, image, getStructuringElement(MORPH_ELLIPSE, Size(7, 7)) );
     
     return image;
 }
 
 Mat Preprocessor::whiteBal(){
     Mat rgbim = src;
+    return src;
     
     if(rgbim.channels() >= 3)
     {
