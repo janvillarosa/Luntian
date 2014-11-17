@@ -56,8 +56,6 @@ Mat Preprocessor::bin_segment(Mat imgThreshold){
     cvtColor(imgThreshold, imgThresholded, CV_GRAY2BGR);
     bitwise_not(imgThresholded, orig);
     
-    imwrite("/Users/janvillarosa/Documents/Luntian/Pre-processed/bw.JPG", orig);
-    
     return orig;
 }
 
@@ -103,8 +101,7 @@ Mat Preprocessor::noisefilter(Mat im){
     //closing (fill small holes in the foreground)
     dilate( image, image, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
     erode(image, image, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
-
-    imwrite("/Users/janvillarosa/Documents/Luntian/Pre-processed/IR64-055.JPG", image);
+    
     return image;
 }
 
@@ -127,7 +124,6 @@ Mat Preprocessor::whiteBal(){
         
         cvtColor(ycrcb,result,CV_YCrCb2BGR);
         
-        imshow("White Balance",result);
         return result;
     }
     return Mat();
@@ -177,7 +173,7 @@ Mat Preprocessor::cropImage(Mat image){
     Rect roi(i, 0, k - i, 300);
     Mat image_roi = image(roi);
     image_roi.copyTo(image);
-    imshow("New Crop",image);
+    //imshow("New Crop",image);
 
     return image;
 }

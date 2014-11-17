@@ -20,7 +20,7 @@ class Greenness{
     
 public:
     int compareLCCValues(int,int,int);
-    void greenness(Mat);
+    Mat greenness(Mat);
 };
 
 int Greenness::compareLCCValues(int H, int S, int V){
@@ -42,7 +42,7 @@ int Greenness::compareLCCValues(int H, int S, int V){
     
 }
 
-void Greenness::greenness(Mat im){
+Mat Greenness::greenness(Mat im){
     Mat rgbim = im.clone();
     Mat3b image;
     cvtColor(rgbim,image,CV_BGR2HSV);
@@ -87,7 +87,6 @@ void Greenness::greenness(Mat im){
     sprintf(name,"LCC Value between %d and %d",lccval-1,lccval);
     putText(image,name, Point(20,200) , FONT_HERSHEY_SIMPLEX, .7, Scalar(0,0,0), 2,8,false );
     
-    imwrite("/Users/janvillarosa/Documents/Luntian/Greenness/IR64-055.JPG", image);
-    imshow( "Greenness", image );
+    return image;
     
 }
