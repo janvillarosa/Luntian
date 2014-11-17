@@ -14,15 +14,20 @@ using namespace cv;
 
 int main(int argc, char *argv[]){
     Mat src;
-    src = imread("/Users/janvillarosa/Desktop/IR64-055.JPG",1);
+    src = imread("/Users/janvillarosa/Desktop/IR64-002.JPG",1);
     Preprocessor pp_instance;
     pp_instance.setSrc(src);
-    Mat filtered = pp_instance.noisefilter(pp_instance.segment(pp_instance.whiteBal()));
+    Mat wBal = pp_instance.whiteBal();
+    
+    Mat  biomass_segment = pp_instance.noisefilter(pp_instance.bin_segment(pp_instance.segment(wBal)));
+    Mat  green_segment = pp_instance.noisefilter(pp_instance.rgb_segment(pp_instance.segment(wBal),wBal));
+    
+    
     
     Greenness g_instance;
-    g_instance.greenness(filtered);
+    g_instance.greenness(green_segment);
 
-    Biomass b_instance;
-    b_instance.getPlantWidth(pp_instance.cropImage(filtered));
+    //Biomass b_instance;
+    //b_instance.getPlantWidth(biomass_segment);
     waitKey();
 }

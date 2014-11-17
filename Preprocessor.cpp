@@ -18,11 +18,45 @@ class Preprocessor{
         Mat noisefilter(Mat);
         Mat whiteBal();
         void setSrc(Mat);
-    Mat cropImage(Mat);
+        Mat cropImage(Mat);
+        Mat bin_segment(Mat);
+        Mat rgb_segment(Mat, Mat);
 };
 
 void Preprocessor::setSrc(Mat source){
     src=source;
+}
+
+Mat Preprocessor::rgb_segment(Mat imgThreshold, Mat im){
+    Mat imgThresholded;
+    Mat3b orig = im.clone();
+    
+    cvtColor(imgThreshold, imgThresholded, CV_GRAY2BGR);
+    bitwise_and(imgThresholded, orig, orig);
+    
+    for (Mat3b::iterator it = orig.begin(); it != orig.end(); it++) {
+        Vec3b hsv = *it;
+        int B=hsv.val[0];
+        int G=hsv.val[1];
+        int R=hsv.val[2];
+        
+        if((B == 0 && G == 0 && R == 0)){
+            *it = Vec3b(255,255,255);
+        } else {
+        }
+    }
+    
+    return orig;
+}
+
+Mat Preprocessor::bin_segment(Mat imgThreshold){
+    Mat imgThresholded;
+    Mat orig;
+    
+    cvtColor(imgThreshold, imgThresholded, CV_GRAY2BGR);
+    bitwise_not(imgThresholded, orig);
+    
+    return orig;
 }
 
 Mat Preprocessor::segment(Mat im){
@@ -54,35 +88,19 @@ Mat Preprocessor::segment(Mat im){
     dilate( imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
     erode(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
     
-    imshow("Thresholded Image", imgThresholded);
-    cvtColor(imgThresholded, imgThresholded, CV_GRAY2BGR);
-    bitwise_and(imgThresholded, orig, orig);
-    
-    for (Mat3b::iterator it = orig.begin(); it != orig.end(); it++) {
-        Vec3b hsv = *it;
-        int B=hsv.val[0];
-        int G=hsv.val[1];
-        int R=hsv.val[2];
-        
-        if((B == 0 && G == 0 && R == 0)){
-            *it = Vec3b(255,255,255);
-        } else {
-        }
-    }
-    
-    return orig;
+    return imgThresholded;
 }
 
 Mat Preprocessor::noisefilter(Mat im){
     Mat3b image = im.clone();
     
     //opening (remove small objects from the foreground)
-    erode(image, image, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)) );
-    dilate( image, image, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)) );
+    erode(image, image, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
+    dilate( image, image, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
     
     //closing (fill small holes in the foreground)
-    dilate( image, image, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)) );
-    erode(image, image, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)) );
+    dilate( image, image, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
+    erode(image, image, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
 
     imwrite("/Users/janvillarosa/Documents/Luntian/Pre-processed/IR64-055.JPG", image);
     return image;
