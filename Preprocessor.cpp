@@ -143,7 +143,7 @@ Mat Preprocessor::whiteBal(){
 Mat Preprocessor::cropImage(Mat image){
     int leftBound = 0;
     int rightBound = 0;
-    int threshold = 250;
+    int threshold = 210;
     int i = 0;
     int k = 0;
 

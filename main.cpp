@@ -17,6 +17,9 @@ using namespace std;
 int main(int argc, char *argv[]){
     Mat src;
     
+    ofstream myfile;
+    myfile.open("radius.txt"); //FOR TESTING
+
     for (int i = 1; i < 61; i++){
         string x = "/Users/janvillarosa/Dropbox/Butil - IRRI Project/Images/10-30-2014/IR64-0";
    
@@ -75,8 +78,9 @@ int main(int argc, char *argv[]){
             imwrite(dir, biomass_segment);
             
             Biomass b_instance;
-            int aveWidth = b_instance.getPlantWidth(biomass_segment);
-            cout << aveWidth << endl;
+            double aveWidth = b_instance.getPlantWidth(biomass_segment);
+            cout << b_instance.convertPixelToCm(b_instance.computePlantRadius(aveWidth)) << endl;
+            myfile << i << ": " << b_instance.computePlantRadius(aveWidth) << " -> " << b_instance.convertPixelToCm(b_instance.computePlantRadius(aveWidth)) << "\n";
         }
     }
 }

@@ -20,6 +20,7 @@ public:
 	double getPlantWidth(Mat);
 	double computePlantRadius(double);
 	double computePlantBiomass(double, double);
+	String convertPixelToCm(double);
 	Mat cropImage(Mat);
 	void setSrc(Mat);
 };
@@ -63,5 +64,14 @@ double Biomass::computePlantRadius(double diameter){
 
 double Biomass::computePlantBiomass(double radius, double height){
 	return M_PI*radius*radius*height;
+}
+
+String Biomass::convertPixelToCm(double width){
+	if (width >=40 && width <100){
+		return "girth is between 7cm to 15cm";
+	}else if (width >= 100){
+		return "girth is between 16cm to 26cm";
+	}else 
+		return "girth is beyond the range";
 }
 
