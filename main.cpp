@@ -78,6 +78,7 @@ int main(int argc, char *argv[]){
             imwrite(dir, biomass_segment);
             
             Biomass b_instance;
+
             double aveWidth = b_instance.getPlantWidth(biomass_segment);
             cout << b_instance.convertPixelToCm(b_instance.computePlantRadius(aveWidth)) << endl;
             myfile << i << ": " << b_instance.computePlantRadius(aveWidth) << " -> " << b_instance.convertPixelToCm(b_instance.computePlantRadius(aveWidth)) << "\n";
