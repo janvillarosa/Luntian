@@ -19,23 +19,38 @@ class Greenness{
     Mat src;
     
 public:
-    int compareLCCValues(int,int,int);
+    float compareLCCValues(int,int,int);
     Mat greenness(Mat);
 };
 
-int Greenness::compareLCCValues(int H, int S, int V){
+float Greenness::compareLCCValues(int H, int S, int V){
     
-    int val1 = abs(H-36)+abs(S-183)+abs(V-167);
-    int val2 = abs(H-44)+abs(S-157)+abs(V-149);
-    int val3 = abs(H-46)+abs(S-154)+abs(V-121);
-    int val4 = abs(H-64)+abs(S-101)+abs(V-121);
+    float val1 = abs(H-38);
+    float val2 = abs(H-48.5);
+    float val3 = abs(H-50.5);
+    float val4 = abs(H-56.5);
     
     if(val1<val2 && val1<val3 && val1<val4){
-        return 2;
+        if(val1 < 3){
+            return 2;
+        }
+        else{
+            return 2.5;
+        }
     }else if(val2<val1 && val2<val3 && val2<val4){
-        return 3;
+        if(val2 < 3){
+            return 3;
+        }
+        else{
+            return 3.5;
+        }
     }else if(val3<val1 && val3<val2 && val3<val4){
-        return 4;
+        if(val2 < 3){
+            return 4;
+        }
+        else{
+            return 4.5;
+        }
     }else{
         return 5;
     }
@@ -45,6 +60,7 @@ int Greenness::compareLCCValues(int H, int S, int V){
 Mat Greenness::greenness(Mat im){
     Mat rgbim = im.clone();
     Mat3b image;
+    
     cvtColor(rgbim,image,CV_BGR2HSV);
     
     int aveH = 0;
@@ -66,7 +82,7 @@ Mat Greenness::greenness(Mat im){
         } else {
         }
     }
-    int lccval = compareLCCValues(aveH/pixelct, aveS/pixelct, aveV/pixelct);
+    float lccval = compareLCCValues(aveH/pixelct, aveS/pixelct, aveV/pixelct);
     
     
     cvtColor(image, image, CV_HSV2BGR);
@@ -84,7 +100,7 @@ Mat Greenness::greenness(Mat im){
     sprintf(name,"Pixels=%d",pixelct);
     putText(image,name, Point(20,160) , FONT_HERSHEY_SIMPLEX, .7, Scalar(0,0,0), 2,8,false );
     
-    sprintf(name,"LCC Value: %d", lccval);
+    sprintf(name,"LCC Value: %f", lccval);
     putText(image,name, Point(20,200) , FONT_HERSHEY_SIMPLEX, .7, Scalar(0,0,0), 2,8,false );
     
     return image;
