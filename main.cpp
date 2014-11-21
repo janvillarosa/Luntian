@@ -16,6 +16,8 @@ using namespace std;
 
 int main(int argc, char *argv[]){
     Mat src;
+    double h1[] = { 75.5,67,72.5,76.5,70.5,70,80,83,76,77.5,70,76.5,75.5,63.5,59,65,71.5,73,68.5,70.5,87,90.5,87.5,96.5,0,0,0,0,0,0,0,32,0,0,31,87,94,
+        87,105,80,95,100,100,97,96,90,92,88,105,90,100,96,92,90,91,87,92,90,93,90}; //while db is not yet connected
     
     ofstream myfile;
     myfile.open("/Users/janvillarosa/Documents/Luntian/radius.txt"); //FOR TESTING
@@ -89,8 +91,8 @@ int main(int argc, char *argv[]){
             Biomass b_instance;
 
             double aveWidth = b_instance.getPlantWidth(biomass_segment);
-            cout << b_instance.convertPixelToCm(b_instance.computePlantRadius(aveWidth)) << endl;
-            myfile << i << ": " << b_instance.computePlantRadius(aveWidth) << " -> " << b_instance.convertPixelToCm(b_instance.computePlantRadius(aveWidth)) << "\n";
+            cout << b_instance.computePlantBiomass(b_instance.convertPixelToCm(b_instance.computePlantRadius(aveWidth)), h1[i - 1]) << endl;
+            myfile << aveWidth << " " << i << ": " << b_instance.computePlantRadius(aveWidth) << " pixels -> " << b_instance.convertPixelToCm(b_instance.computePlantRadius(aveWidth)) << " cm biomass (longest tiller): " << b_instance.computePlantBiomass(b_instance.convertPixelToCm(b_instance.computePlantRadius(aveWidth)), h1[i - 1]) << " cm \n";
         }
     }
     myfile.close();
