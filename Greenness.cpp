@@ -25,27 +25,29 @@ public:
 
 float Greenness::compareLCCValues(int H, int S, int V){
     
-    float val1 = abs(H-38);
-    float val2 = abs(H-48.5);
+    float val1 = abs(H-40.5);
+    float val2 = abs(H-46);
     float val3 = abs(H-50.5);
     float val4 = abs(H-56.5);
     
-    if(val1<val2 && val1<val3 && val1<val4){
-        if(val1 < 3){
+    if (H<39.5){
+        return 1.5;
+    } else if(val1<val2 && val1<val3 && val1<val4){
+        if(val1 < 1){
             return 2;
         }
         else{
             return 2.5;
         }
     }else if(val2<val1 && val2<val3 && val2<val4){
-        if(val2 < 3){
+        if(val2 < 1){
             return 3;
         }
         else{
             return 3.5;
         }
     }else if(val3<val1 && val3<val2 && val3<val4){
-        if(val2 < 3){
+        if(val2 < 1){
             return 4;
         }
         else{
@@ -100,7 +102,7 @@ Mat Greenness::greenness(Mat im){
     sprintf(name,"Pixels=%d",pixelct);
     putText(image,name, Point(20,160) , FONT_HERSHEY_SIMPLEX, .7, Scalar(0,0,0), 2,8,false );
     
-    sprintf(name,"LCC Value: %f", lccval);
+    sprintf(name,"LCC Value: %2f", lccval);
     putText(image,name, Point(20,200) , FONT_HERSHEY_SIMPLEX, .7, Scalar(0,0,0), 2,8,false );
     
     return image;
