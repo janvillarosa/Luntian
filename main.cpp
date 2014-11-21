@@ -18,7 +18,7 @@ int main(int argc, char *argv[]){
     Mat src;
     
     ofstream myfile;
-    myfile.open("radius.txt"); //FOR TESTING
+    myfile.open("/Users/janvillarosa/Documents/Luntian/radius.txt"); //FOR TESTING
 
     for (int i = 1; i < 61; i++){
         string x = "/Users/janvillarosa/Dropbox/Butil - IRRI Project/Images/10-30-2014/IR64-0";
@@ -36,11 +36,20 @@ int main(int argc, char *argv[]){
             Preprocessor pp_instance;
             pp_instance.setSrc(src);
             Mat wBal = pp_instance.whiteBal();
+            
+            string dir = "/Users/janvillarosa/Documents/Luntian/Pre-processed/IR64-0";
+            if (i < 10){
+                dir.append("0");
+            }
+            dir.append(to_string(i));
+            dir.append("-wbal.JPG");
+            
+            imwrite(dir, wBal);
         
             Mat  biomass_segment = pp_instance.bin_segment(wBal);
             Mat  green_segment = pp_instance.noisefilter(pp_instance.rgb_segment(pp_instance.segment(wBal),wBal));
             
-            string dir = "/Users/janvillarosa/Documents/Luntian/Pre-processed/IR64-0";
+            dir = "/Users/janvillarosa/Documents/Luntian/Pre-processed/IR64-0";
             if (i < 10){
                 dir.append("0");
             }
@@ -84,4 +93,5 @@ int main(int argc, char *argv[]){
             myfile << i << ": " << b_instance.computePlantRadius(aveWidth) << " -> " << b_instance.convertPixelToCm(b_instance.computePlantRadius(aveWidth)) << "\n";
         }
     }
+    myfile.close();
 }

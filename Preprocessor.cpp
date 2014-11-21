@@ -117,23 +117,24 @@ Mat Preprocessor::noisefilter(Mat im){
 
 Mat Preprocessor::whiteBal(){
     Mat rgbim = src;
-    return src;
+    //return src;
     
     if(rgbim.channels() >= 3)
     {
-        Mat ycrcb;
+        Mat hsv;
         
-        cvtColor(rgbim,ycrcb,CV_BGR2YCrCb);
+        cvtColor(rgbim,hsv,CV_BGR2HSV);
         
         vector<Mat> channels;
-        split(ycrcb,channels);
+        split(hsv,channels);
         
-        equalizeHist(channels[0], channels[0]);
+        normalize(channels[1], channels[1], 0, 255, NORM_MINMAX);
+        normalize(channels[2], channels[2], 0, 255, NORM_MINMAX);
         
         Mat result;
-        merge(channels,ycrcb);
+        merge(channels,hsv);
         
-        cvtColor(ycrcb,result,CV_YCrCb2BGR);
+        cvtColor(hsv,result,CV_HSV2BGR);
         
         return result;
     }
@@ -143,7 +144,7 @@ Mat Preprocessor::whiteBal(){
 Mat Preprocessor::cropImage(Mat image){
     int leftBound = 0;
     int rightBound = 0;
-    int threshold = 210;
+    int threshold = 250;
     int i = 0;
     int k = 0;
 
