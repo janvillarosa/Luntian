@@ -64,6 +64,6 @@ double Biomass::computePlantBiomass(double radius, double height){
 }
 
 double Biomass::convertPixelToCm(double radius){
-	return radius*10/157.6667;
+	return radius*25.4/932;
 }
 
