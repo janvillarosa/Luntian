@@ -17,11 +17,17 @@ using namespace cv;
 
 class Greenness{
     Mat src;
+    Mat result;
     
 public:
     float compareLCCValues(int,int,int);
-    Mat greenness(Mat);
+    float greenness(Mat);
+    Mat getResult();
 };
+
+Mat Greenness:: getResult(){
+    return result;
+}
 
 float Greenness::compareLCCValues(int H, int S, int V){
     
@@ -59,7 +65,7 @@ float Greenness::compareLCCValues(int H, int S, int V){
     
 }
 
-Mat Greenness::greenness(Mat im){
+float Greenness::greenness(Mat im){
     Mat rgbim = im.clone();
     Mat3b image;
     
@@ -85,26 +91,29 @@ Mat Greenness::greenness(Mat im){
         }
     }
     float lccval = compareLCCValues(aveH/pixelct, aveS/pixelct, aveV/pixelct);
+    lccval = floor(lccval * 1000.0) / 1000.0;
     
     
     cvtColor(image, image, CV_HSV2BGR);
     
     char name[30];
     sprintf(name,"Average H=%d",aveH/pixelct);
-    putText(image,name, Point(20,40) , FONT_HERSHEY_SIMPLEX, .7, Scalar(0,0,0), 2,8,false );
+    putText(image,name, Point(40,80) , FONT_HERSHEY_SIMPLEX, 2, Scalar(0,0,0), 2,8,false );
     
     sprintf(name,"Average S=%d",aveS/pixelct);
-    putText(image,name, Point(20,80) , FONT_HERSHEY_SIMPLEX, .7, Scalar(0,0,0), 2,8,false );
+    putText(image,name, Point(40,160) , FONT_HERSHEY_SIMPLEX, 2, Scalar(0,0,0), 2,8,false );
     
     sprintf(name,"Average V=%d",aveV/pixelct);
-    putText(image,name, Point(20,120) , FONT_HERSHEY_SIMPLEX, .7, Scalar(0,0,0), 2,8,false );
+    putText(image,name, Point(40,240) , FONT_HERSHEY_SIMPLEX, 2, Scalar(0,0,0), 2,8,false );
     
     sprintf(name,"Pixels=%d",pixelct);
-    putText(image,name, Point(20,160) , FONT_HERSHEY_SIMPLEX, .7, Scalar(0,0,0), 2,8,false );
+    putText(image,name, Point(40,320) , FONT_HERSHEY_SIMPLEX, 2, Scalar(0,0,0), 2,8,false );
     
-    sprintf(name,"LCC Value: %2f", lccval);
-    putText(image,name, Point(20,200) , FONT_HERSHEY_SIMPLEX, .7, Scalar(0,0,0), 2,8,false );
+    sprintf(name,"LCC Value: %.1f", lccval);
+    putText(image,name, Point(40,400) , FONT_HERSHEY_SIMPLEX, 2, Scalar(0,0,0), 2,8,false );
     
-    return image;
+    result = image;
+    
+    return lccval;
     
 }

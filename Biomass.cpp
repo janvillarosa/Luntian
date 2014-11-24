@@ -31,9 +31,6 @@ void Biomass::setSrc(Mat source){
 
 double Biomass::getPlantWidth(Mat image){								
 
-	int H = 0;
-	int S = 0;
-	int V = 225;
 	int width;
 	int aveWidth = 0;
 		
@@ -66,7 +63,7 @@ double Biomass::computePlantBiomass(double radius, double height){
 	return M_PI*radius*radius*height;
 }
 
-double Biomass::convertPixelToCm(double width){
+double Biomass::convertPixelToCm(double radius){
 	return radius*10/157.6667;
 }
 
