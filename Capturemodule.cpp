@@ -6,108 +6,51 @@
 #include <ctime>
 #include <time.h>
 
-using namespace std;
+
+//Opencv includes
+#include <opencv\cv.h>
+#include <opencv2\highgui\highgui.hpp>
+#include <opencv2\imgproc\imgproc.hpp>
 
 // Connector Includes
-
 #include "cppconnection/driver.h"
 #include "cppconnection/exception.h"
 #include "cppconnection/resultset.h"
 #include "cppconnection/statement.h"
 #include "cppconnection/prepared_statement.h"
 
+// Capture Appointment Object
+#include "CaptureAppointment.cpp"
 
 // Link to the Connector/C++ library
 #pragma comment(lib, "mysqlcppconn.lib")
+
+using namespace std;
+using namespace cv;
 
 // Connection details
 string server = "localhost";
 string username = "root";
 string password = "root";
 
-//Camera Appointment Class
-class Camera_Appointment {
-	private://Atrributes
-		int id;
-		sql::SQLString date_taken;
-		int camera_id;
-		sql::SQLString interval;
-
-	public://Methods
-		//Constructors
-		Camera_Appointment(){
-			this->id = NULL;
-			this->date_taken = "";
-			this->camera_id = NULL;
-			this->interval = "";
-		}
-
-		Camera_Appointment(int id, sql::SQLString date_taken, int camera_id, sql::SQLString interval){
-			this->id = id;
-			this->date_taken = date_taken;
-			this->camera_id = camera_id;
-			this->interval = interval;
-		}
-
-		//Compare datetime strings
-		int compareDate(string date){
-			string str = date_taken.asStdString();
-			return date.compare(str);
-		}
-
-		//Gets the next datetime base of interval
-		string getNextIntervalDateTime(){
-			if (interval.compare("Once")){
-				/*Set new appointment if interval is not once*/
-				struct tm time_tm;
-
-				/*Parse Datetime*/
-				int year, month, hour, min, sec;
-				sscanf_s(date_taken.c_str(), "%d-%d-%d %d:%d:%d", &year, &month, &(time_tm.tm_mday), &(time_tm.tm_hour), &(time_tm.tm_min), &(time_tm.tm_sec));
-				time_tm.tm_year = year - 1900;
-				time_tm.tm_mon = month - 1;
-
-				/*Set new datetime*/
-				if (!interval.compare("Daily"))
-					time_tm.tm_mday += 1;
-				else if (!interval.compare("Weekly"))
-					time_tm.tm_mday += 7;
-
-				/*Adjust Overflowing Numbers*/
-				mktime(&time_tm);
-
-				/*Convert to String*/
-				std::string new_date_str;
-				char date_char[20] = "";
-				strftime(date_char, 20, "%Y-%m-%d %H:%M:%S", &time_tm);
-				new_date_str = "";
-				new_date_str.append(date_char);
-
-				return new_date_str;
-			}
-			else{
-				return "";
-			}
-		}
-
-		//Getters
-		int getId(){ return id; }
-		string getDateTaken(){ return date_taken.asStdString(); }
-		int getCameraId(){ return camera_id; }
-		string getInterval(){ return interval.asStdString(); }
-};
-
-
 int main(void)
 {
 
 	try {
+		Mat frame;
+
+		//Connect to camera
+		string camera_username = "admin";
+		string camera_password = "c4rice";
+		string ipAddress = "192.168.0.20";
+		VideoCapture cap("http://" + camera_username + ":" + camera_password + "@" + ipAddress + "/image/jpeg.cgi?user=" + camera_username + "&password=" + camera_password + "&channel=0&.jpeg");//Video capture url
+
+		/* Create a connection */
 		sql::Driver *driver;
 		sql::Connection *con;
 		sql::Statement *stmt;
 		sql::ResultSet *res;
 
-		/* Create a connection */
 		driver = get_driver_instance();
 		con = driver->connect(server, username, password);
 		/* Connect to the MySQL test database */
@@ -116,18 +59,20 @@ int main(void)
 
 		string select_next_appointment_query = "SELECT * FROM `camera_appointment` WHERE `Date_taken` > now() order by Date_Taken asc LIMIT 1;";//QUERY
 
-		/*Check until current time*/
-		std::string current_time_str;
-		char current_time[20] = "";
+		/*Variables for check time*/
 		time_t current_raw_time;
+		time_t previous_minute_time = time(NULL);
 		struct tm time_struct;
+		char current_time[20] = "";
+		std::string current_time_str;
+				
 
 		/*Camera Appointment Class Declaration*/
 		Camera_Appointment *next_appointment = NULL;
 
 
 		do{
-			/*Retrieve Current Time*/
+			/*Retrieve Current Time to current_time_str*/
 			current_raw_time = time(NULL);
 			localtime_s(&time_struct, &current_raw_time);
 
@@ -138,22 +83,18 @@ int main(void)
 			/*Compare Current time and Next Appointment time*/
 			if (next_appointment != NULL){
 				if (!next_appointment->compareDate(current_time_str)){
-					//EXECUTE CAPTURE HERE
-					cout << "Execute Capture! " << endl;
+					/*EXECUTE CAPTURE*/
+					if (cap.isOpened()){
+						cap >> frame;
 
+						/*PERFORM IMAGE PROCESSING HERE*/
+						imwrite("image.jpeg", frame);
+						cout << "Image Saved!" << endl;
+					}
+
+					/*Create new appointment if interval is daily or weekly*/
 					if (!(next_appointment->getInterval().compare("Daily") && next_appointment->getInterval().compare("Weekly"))){
-						sql::PreparedStatement  *prep_stmt;
-
-						string new_datetime = next_appointment->getNextIntervalDateTime();
-						//string insert_new_appointment_query = "INSERT INTO `camera_appointment` (`Date_Taken`, `Camera_ID`, `Interval`) VALUES ('" + new_datetime + "'," + next_appointment->getCameraId + ",'" + next_appointment->getInterval + "');";
-						
-						prep_stmt = con->prepareStatement("INSERT INTO `camera_appointment` (`Date_Taken`, `Camera_ID`, `Interval`) VALUES (?, ?, ?)");
-						prep_stmt->setString(1, new_datetime);
-						prep_stmt->setInt(2, next_appointment->getCameraId());
-						prep_stmt->setString(3, next_appointment->getInterval());
-						prep_stmt->execute();
-
-						delete prep_stmt;
+						next_appointment->createNewAppointmentBasedFromInterval(con);
 					}
 
 					delete next_appointment;
@@ -162,20 +103,26 @@ int main(void)
 			}
 
 			/*Check if new next appointment is needed*/
-			if (next_appointment == NULL){
+			if (next_appointment == NULL || current_raw_time - previous_minute_time >= 5){
 
 				res = stmt->executeQuery(select_next_appointment_query);
 				if (res->next()){
-					next_appointment = new Camera_Appointment(res->getInt("ID"), res->getString("Date_Taken"), res->getInt("Camera_ID"), res->getString("Interval"));
-
-					cout << "Next appointment: " << next_appointment->getDateTaken() << endl;
-					cout << "ID: " << next_appointment->getId() << endl;
-					cout << "Camera_ID: " << next_appointment->getCameraId() << endl;
-					cout << "Interval: " << next_appointment->getInterval() << endl;
+					if (next_appointment == NULL){
+						cout << endl;
+						next_appointment = new Camera_Appointment(res->getInt("ID"), res->getString("Date_Taken"), res->getInt("Camera_ID"), res->getString("Interval"));
+						next_appointment->printDetails();
+					}
+					else if(next_appointment->compareDate(res->getString("Date_Taken").asStdString())){
+						cout << endl;
+						cout << "New next appointment found!" << endl;
+						next_appointment = new Camera_Appointment(res->getInt("ID"), res->getString("Date_Taken"), res->getInt("Camera_ID"), res->getString("Interval"));
+						next_appointment->printDetails();
+					}
 				}
+				previous_minute_time = time(NULL);
 				delete res;
 			}
-		}while (1);
+		}while (cap.isOpened());
 
 		_getch();
 		delete res;
