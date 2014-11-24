@@ -21,7 +21,6 @@ public:
 	double computePlantRadius(double);
 	double computePlantBiomass(double, double);
 	double convertPixelToCm(double);
-	Mat cropImage(Mat);
 	void setSrc(Mat);
 };
 
