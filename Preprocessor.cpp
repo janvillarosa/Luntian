@@ -59,15 +59,15 @@ Mat Preprocessor::bin_segment(Mat wBal){
     
     Mat src_gray;                               
     cvtColor(wBal, src_gray, CV_RGB2GRAY);  
-    threshold(src_gray, wBal, 170, 255, 0); 
+    threshold(src_gray, wBal, 170, 255, 0);
     
     //opening (remove small objects from the foreground)
-    erode(wBal, wBal, getStructuringElement(MORPH_ELLIPSE, Size(7, 7)) );
-    dilate( wBal, wBal, getStructuringElement(MORPH_ELLIPSE, Size(7, 7)) );
+    erode(wBal, wBal, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)) );
+    dilate( wBal, wBal, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)) );
     
     //closing (fill small holes in the foreground)
-    dilate( wBal, wBal, getStructuringElement(MORPH_ELLIPSE, Size(7, 7)) );
-    erode(wBal, wBal, getStructuringElement(MORPH_ELLIPSE, Size(7, 7)) );
+    dilate( wBal, wBal, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)) );
+    erode(wBal, wBal, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)) );
     
     return wBal;
 }
@@ -108,12 +108,12 @@ Mat Preprocessor::noisefilter(Mat im){
     Mat3b image = im.clone();
     
     //opening (remove small objects from the foreground)
-    erode(image, image, getStructuringElement(MORPH_ELLIPSE, Size(7, 7)) );
-    dilate( image, image, getStructuringElement(MORPH_ELLIPSE, Size(7, 7)) );
+    erode(image, image, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)) );
+    dilate( image, image, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)) );
     
     //closing (fill small holes in the foreground)
-    dilate( image, image, getStructuringElement(MORPH_ELLIPSE, Size(7, 7)) );
-    erode(image, image, getStructuringElement(MORPH_ELLIPSE, Size(7, 7)) );
+    dilate( image, image, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)) );
+    erode(image, image, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)) );
     
     return image;
 }
