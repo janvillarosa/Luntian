@@ -102,8 +102,8 @@ int main(int argc, char *argv[]){
         //FOR DIAGNOSTICS ONLY. USE CAMERA SETUP IF POSSIBLE
         
         ofstream myfile, gfile;
-        myfile.open("/Users/janvillarosa/Documents/Luntian/radius.txt"); //FOR TESTING
-        gfile.open("/Users/janvillarosa/Documents/Luntian/greenness.txt");
+        myfile.open("/Users/janvillarosa/git/web-butil/public/Phenotypic Images/radius.txt"); //FOR TESTING
+        gfile.open("/Users/janvillarosa/git/web-butil/public/Phenotypic Images/greenness.txt");
         
         for (int i = 1; i < 61; i++){
             tempDir = FILE_DIR_SOURCE;
