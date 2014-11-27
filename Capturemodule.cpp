@@ -1,16 +1,16 @@
 // Standard includes
 #include <stdlib.h>
-#include <conio.h>
 #include <iostream>
 #include <iomanip>
 #include <ctime>
+//#include <conio.h>
 #include <time.h>
 
 
 //Opencv includes
-#include <opencv\cv.h>
-#include <opencv2\highgui\highgui.hpp>
-#include <opencv2\imgproc\imgproc.hpp>
+#include <opencv/cv.h>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
 
 // Connector Includes
 #include "cppconnection/driver.h"
@@ -33,11 +33,23 @@ string server = "localhost";
 string username = "root";
 string password = "root";
 
-int main(void)
+class CaptureModule{
+    
+    Mat frame;
+    
+public:
+    int testCapture();
+    Mat getFrame();
+};
+
+Mat CaptureModule::getFrame(){
+    return frame;
+}
+
+int CaptureModule::testCapture()
 {
 
 	try {
-		Mat frame;
 
 		//Connect to camera
 		string camera_username = "admin";
@@ -74,7 +86,7 @@ int main(void)
 		do{
 			/*Retrieve Current Time to current_time_str*/
 			current_raw_time = time(NULL);
-			localtime_s(&time_struct, &current_raw_time);
+			localtime(&current_raw_time);
 
 			strftime(current_time, 20, "%Y-%m-%d %H:%M:%S", &time_struct);
 			current_time_str = "";
@@ -124,7 +136,7 @@ int main(void)
 			}
 		}while (cap.isOpened());
 
-		_getch();
+		getchar();
 		delete res;
 		delete stmt;
 		delete con;
@@ -136,7 +148,7 @@ int main(void)
 		cout << "# ERR: " << e.what();
 		cout << " (MySQL error code: " << e.getErrorCode();
 		cout << ", SQLState: " << e.getSQLState() << " )" << endl;
-		_getch();
+		getchar();
 	}
 
 	cout << endl;

@@ -1,6 +1,6 @@
 // Standard includes
 #include <stdlib.h>
-#include <conio.h>
+//#include <conio.h>
 #include <iostream>
 #include <iomanip>
 #include <ctime>
@@ -53,7 +53,7 @@ public://Methods
 
 			/*Parse Datetime*/
 			int year, month;
-			sscanf_s(date_taken.c_str(), "%d-%d-%d %d:%d:%d", &year, &month, &(time_tm.tm_mday), &(time_tm.tm_hour), &(time_tm.tm_min), &(time_tm.tm_sec));
+			sscanf(date_taken.c_str(), "%d-%d-%d %d:%d:%d", &year, &month, &(time_tm.tm_mday), &(time_tm.tm_hour), &(time_tm.tm_min), &(time_tm.tm_sec));
 			time_tm.tm_year = year - 1900;
 			time_tm.tm_mon = month - 1;
 
