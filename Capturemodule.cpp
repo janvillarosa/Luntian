@@ -13,11 +13,13 @@
 #include <opencv2/imgproc/imgproc.hpp>
 
 // Connector Includes
-#include "cppconnection/driver.h"
-#include "cppconnection/exception.h"
-#include "cppconnection/resultset.h"
-#include "cppconnection/statement.h"
-#include "cppconnection/prepared_statement.h"
+#include "mysql_connection.h"
+
+#include <cppconn/driver.h>
+#include <cppconn/exception.h>
+#include <cppconn/resultset.h>
+#include <cppconn/statement.h>
+#include <cppconn/prepared_statement.h>
 
 // Capture Appointment Object
 #include "CaptureAppointment.cpp"

@@ -117,6 +117,7 @@ int main(int argc, char *argv[]){
             src = imread(tempDir, 1);
             if (src.empty() == false){
                 
+                DatabaseAccess db_instance;
                 
                 Preprocessor pp_instance;
                 pp_instance.setSrc(src);
@@ -131,6 +132,8 @@ int main(int argc, char *argv[]){
                 
                 imwrite(tempDir, wBal);
                 
+                db_instance.setPrepro_segment(tempDir);
+                
                 Mat  biomass_segment = pp_instance.bin_segment(wBal);
                 Mat  green_segment = pp_instance.noisefilter(pp_instance.rgb_segment(pp_instance.segment(wBal),wBal));
                 
@@ -143,6 +146,8 @@ int main(int argc, char *argv[]){
                 
                 imwrite(tempDir, green_segment);
                 
+                db_instance.setGreenness_segment(tempDir);
+                
                 biomass_segment=pp_instance.cropImage(biomass_segment);
                 
                 tempDir = FILE_DIR_PREPROCESSING; // biomass preprocessing image output
@@ -153,6 +158,8 @@ int main(int argc, char *argv[]){
                 tempDir.append("-bin.JPG");
                 
                 imwrite(tempDir, biomass_segment);
+                
+                db_instance.setBiomass_segment(tempDir);
                 
                 Greenness g_instance;
                 
@@ -177,6 +184,13 @@ int main(int argc, char *argv[]){
                 double biomassval = b_instance.computePlantBiomass(b_instance.convertPixelToCm(b_instance.computePlantRadius(aveWidth)), h1[i - 1]);
                 cout << biomassval << endl;
                 myfile << aveWidth << " " << i << ": " << b_instance.computePlantRadius(aveWidth) << " pixels -> " << b_instance.convertPixelToCm(b_instance.computePlantRadius(aveWidth)) << " cm biomass (longest tiller): " << biomassval << " cm \n";
+                
+                //HARDCODED HEIGHT AND TILLER VALUES, THIS WILL BE GONE WHEN INTEGRATION WITH SEIGHT IS FINISHED
+                double heightval = 0;
+                double tillerval = 0;
+                
+                db_instance.setValues(heightval, tillerval, greenval, aveWidth, biomassval);
+                db_instance.insertToDB();
             }
         }
         myfile.close();
