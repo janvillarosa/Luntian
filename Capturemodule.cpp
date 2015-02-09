@@ -1,16 +1,16 @@
 // Standard includes
 #include <stdlib.h>
+#include <conio.h>
 #include <iostream>
 #include <iomanip>
 #include <ctime>
-//#include <conio.h>
 #include <time.h>
 
 
 //Opencv includes
-#include <opencv/cv.h>
-#include <opencv2/highgui/highgui.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv\cv.h>
+#include <opencv2\highgui\highgui.hpp>
+#include <opencv2\imgproc\imgproc.hpp>
 
 // Connector Includes
 #include "mysql_connection.h"
@@ -22,7 +22,8 @@
 #include <cppconn/prepared_statement.h>
 
 // Capture Appointment Object
-#include "CaptureAppointment.cpp"
+#include "CaptureAppointment.h"
+#include "CameraStream.h"
 
 // Link to the Connector/C++ library
 #pragma comment(lib, "mysqlcppconn.lib")
@@ -30,140 +31,82 @@
 using namespace std;
 using namespace cv;
 
-class CaptureModule{
-    
-private:
-    Mat frame;
-    string server = "localhost";
-    string username = "root";
-    string password = "root";
-    
-public:
-    int testCapture();
-    Mat getFrame();
-};
+// Connection details
+string server = "localhost";
+string username = "root";
+string password = "root";
 
-Mat CaptureModule::getFrame(){
-    return frame;
-}
-
-int CaptureModule::testCapture()
+int main(void)
 {
-    
-    try {
-        
-        //Connect to camera
-        string camera_username = "admin";
-        string camera_password = "c4rice";
-        string ipAddress = "192.168.0.20";
-        
-        VideoCapture cap("http://" +  ipAddress + "/image/jpeg.cgi?user=" + camera_username + "&password=" + camera_password + "&channel=0&.jpeg");//Video capture url
-        
-        //VideoCapture cap(0);
-        
-        if(cap.isOpened()){
-            cap >> frame;
-            
-            /*PERFORM IMAGE PROCESSING HERE*/
-            imwrite("/Users/janvillarosa/Documents/Luntian/img.jpeg", frame);
-            cout << "Image Saved!" << endl;
-        }
-        
-        /* Create a connection */
-        sql::Driver *driver;
-        sql::Connection *con;
-        sql::Statement *stmt;
-        sql::ResultSet *res;
-        
-        driver = get_driver_instance();
-        con = driver->connect(server, username, password);
-        /* Connect to the MySQL test database */
-        con->setSchema("Butil");
-        stmt = con->createStatement();
-        
-        string select_next_appointment_query = "SELECT * FROM `camera_appointment` WHERE `Date_taken` > now() order by Date_Taken asc LIMIT 1;";//QUERY
-        
-        /*Variables for check time*/
-        time_t current_raw_time;
-        time_t previous_minute_time = time(NULL);
-        struct tm time_struct;
-        char current_time[20] = "";
-        std::string current_time_str;
-        
-        
-        /*Camera Appointment Class Declaration*/
-        Camera_Appointment *next_appointment = NULL;
-        
-        
-        do{
-            /*Retrieve Current Time to current_time_str*/
-            current_raw_time = time(NULL);
-            localtime(&current_raw_time);
-            
-            strftime(current_time, 20, "%Y-%m-%d %H:%M:%S", &time_struct);
-            current_time_str = "";
-            current_time_str.append(current_time);
-            
-            /*Compare Current time and Next Appointment time*/
-            if (next_appointment != NULL){
-                if (!next_appointment->compareDate(current_time_str)){
-                    /*EXECUTE CAPTURE*/
-                    if (cap.isOpened()){
-                        cap >> frame;
-                        
-                        /*PERFORM IMAGE PROCESSING HERE*/
-                        imwrite("/Users/janvillarosa/Documents/Luntian/image.jpeg", frame);
-                        cout << "Image Saved!" << endl;
-                    }
-                    
-                    /*Create new appointment if interval is daily or weekly*/
-                    if (!(next_appointment->getInterval().compare("Daily") && next_appointment->getInterval().compare("Weekly"))){
-                        next_appointment->createNewAppointmentBasedFromInterval(con);
-                    }
-                    
-                    delete next_appointment;
-                    next_appointment = NULL;
-                }
-            }
-            
-            /*Check if new next appointment is needed*/
-            if (next_appointment == NULL || current_raw_time - previous_minute_time >= 5){
-                
-                res = stmt->executeQuery(select_next_appointment_query);
-                if (res->next()){
-                    if (next_appointment == NULL){
-                        cout << endl;
-                        next_appointment = new Camera_Appointment(res->getInt("ID"), res->getString("Date_Taken"), res->getInt("Camera_ID"), res->getString("Interval"));
-                        next_appointment->printDetails();
-                    }
-                    else if(next_appointment->compareDate(res->getString("Date_Taken").asStdString())){
-                        cout << endl;
-                        cout << "New next appointment found!" << endl;
-                        next_appointment = new Camera_Appointment(res->getInt("ID"), res->getString("Date_Taken"), res->getInt("Camera_ID"), res->getString("Interval"));
-                        next_appointment->printDetails();
-                    }
-                }
-                previous_minute_time = time(NULL);
-                delete res;
-            }
-        }while (cap.isOpened());
-        
-        getchar();
-        delete res;
-        delete stmt;
-        delete con;
-        
-    }
-    catch (sql::SQLException &e) {
-        cout << "# ERR: SQLException in " << __FILE__;
-        cout << __LINE__ << endl;
-        cout << "# ERR: " << e.what();
-        cout << " (MySQL error code: " << e.getErrorCode();
-        cout << ", SQLState: " << e.getSQLState() << " )" << endl;
-        getchar();
-    }
-    
-    cout << endl;
-    
-    return 0;
+
+	try {
+		std::vector<CameraStream*> cameras;
+
+		//Connect to camera
+		//string camera_username = "admin";
+		//string camera_password = "c4rice";
+		//string ipAddress = "192.168.0.20";
+
+		//CameraStream *camera = new CameraStream(camera_username, camera_password, ipAddress);
+
+		/* Create a connection */
+		sql::Driver *driver;
+		sql::Connection *con;
+		sql::Statement *stmt;
+		sql::ResultSet *res;
+
+		driver = get_driver_instance();
+		con = driver->connect(server, username, password);
+		/* Connect to the MySQL test database */
+		con->setSchema("Butil");
+		stmt = con->createStatement();
+
+		string select_all_camera = "SELECT * FROM `camera`";//QUERY
+
+		res = stmt->executeQuery(select_all_camera);
+		while (res->next()){
+			cout << "Camera " << res->getInt("ID") << " properties retrieved" << endl;
+			cameras.push_back(new CameraStream(res->getInt("ID"), res->getString("Username"), res->getString("Password"), res->getString("IP_Address")));
+		}
+
+		delete res;
+
+		time_t prev_time = time(NULL);
+		time_t curr_time;
+
+		do{
+			int i;
+
+			curr_time = time(NULL);
+
+			for (i = 0; i < cameras.size(); i++){
+				cameras[i]->checkAppointment(con);
+			}
+
+			if (curr_time - prev_time >= 10){
+				for (i = 0; i < cameras.size(); i++){
+					cameras[i]->checkNextAppointment(stmt, res);
+				}
+				prev_time = time(NULL);
+			}
+		}while (1);
+
+		_getch();
+		delete res;
+		delete stmt;
+		delete con;
+
+	}
+	catch (sql::SQLException &e) {
+		cout << "# ERR: SQLException in " << __FILE__;
+		cout << __LINE__ << endl;
+		cout << "# ERR: " << e.what();
+		cout << " (MySQL error code: " << e.getErrorCode();
+		cout << ", SQLState: " << e.getSQLState() << " )" << endl;
+		_getch();
+	}
+
+	cout << endl;
+
+	return 0;
 }
