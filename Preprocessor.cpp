@@ -53,7 +53,7 @@ Mat Preprocessor::rgb_segment(Mat imgThreshold, Mat im){
 }
 
 Mat Preprocessor::bin_segment(Mat wBal){
-	Rect roi(wBal.cols / 4, (wBal.rows / 4) * 3, wBal.cols / 3, wBal.rows / 10); //Updated but still for improvement
+	Rect roi(wBal.cols / 4, (wBal.rows / 5) * 4, wBal.cols / 2, wBal.rows / 9); //Updated but still for improvement
     Mat src_roi = wBal(roi);        
     src_roi.copyTo(wBal);      
     
