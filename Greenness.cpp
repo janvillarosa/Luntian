@@ -190,22 +190,22 @@ float Greenness::greenness(Mat im){
     cvtColor(image, image, CV_HSV2BGR);
     
     char name[30];
-    sprintf(name,"Average H=%d",aveH/pixelct);
-    putText(image,name, Point(40,80) , FONT_HERSHEY_SIMPLEX, 2, Scalar(0,0,0), 2,8,false );
-    
-    sprintf(name,"Average S=%d",aveS/pixelct);
-    putText(image,name, Point(40,160) , FONT_HERSHEY_SIMPLEX, 2, Scalar(0,0,0), 2,8,false );
-    
-    sprintf(name,"Average V=%d",aveV/pixelct);
-    putText(image,name, Point(40,240) , FONT_HERSHEY_SIMPLEX, 2, Scalar(0,0,0), 2,8,false );
-    
-    sprintf(name,"Pixels=%d",pixelct);
-    putText(image,name, Point(40,320) , FONT_HERSHEY_SIMPLEX, 2, Scalar(0,0,0), 2,8,false );
-    
-    sprintf(name,"LCC Value: %.1f", lccval);
-    putText(image,name, Point(40,400) , FONT_HERSHEY_SIMPLEX, 2, Scalar(0,0,0), 2,8,false );
-    
-    rectangle(image, Point(40,420), Point(140,520), HSVtoRGBcvScalar(aveH/pixelct, aveS/pixelct, aveV/pixelct),CV_FILLED);
+//    sprintf(name,"Average H=%d",aveH/pixelct);
+//    putText(image,name, Point(40,80) , FONT_HERSHEY_SIMPLEX, 2, Scalar(0,0,0), 2,8,false );
+//    
+//    sprintf(name,"Average S=%d",aveS/pixelct);
+//    putText(image,name, Point(40,160) , FONT_HERSHEY_SIMPLEX, 2, Scalar(0,0,0), 2,8,false );
+//    
+//    sprintf(name,"Average V=%d",aveV/pixelct);
+//    putText(image,name, Point(40,240) , FONT_HERSHEY_SIMPLEX, 2, Scalar(0,0,0), 2,8,false );
+//    
+//    sprintf(name,"Pixels=%d",pixelct);
+//    putText(image,name, Point(40,320) , FONT_HERSHEY_SIMPLEX, 2, Scalar(0,0,0), 2,8,false );
+//    
+//    sprintf(name,"LCC Value: %.1f", lccval);
+//    putText(image,name, Point(40,400) , FONT_HERSHEY_SIMPLEX, 2, Scalar(0,0,0), 2,8,false );
+//    
+//    rectangle(image, Point(40,420), Point(140,520), HSVtoRGBcvScalar(aveH/pixelct, aveS/pixelct, aveV/pixelct),CV_FILLED);
     
     result = image;
     

@@ -62,12 +62,12 @@ Mat Preprocessor::bin_segment(Mat wBal){
     threshold(src_gray, wBal, 170, 255, 0);
     
     //opening (remove small objects from the foreground)
-    erode(wBal, wBal, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)) );
-    dilate( wBal, wBal, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)) );
+    erode(wBal, wBal, getStructuringElement(MORPH_ELLIPSE, Size(1, 1)) );
+    dilate( wBal, wBal, getStructuringElement(MORPH_ELLIPSE, Size(1, 1)) );
     
     //closing (fill small holes in the foreground)
-    dilate( wBal, wBal, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)) );
-    erode(wBal, wBal, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)) );
+    dilate( wBal, wBal, getStructuringElement(MORPH_ELLIPSE, Size(1, 1)) );
+    erode(wBal, wBal, getStructuringElement(MORPH_ELLIPSE, Size(1, 1)) );
     
     return wBal;
 }
@@ -81,7 +81,7 @@ Mat Preprocessor::segment(Mat im){
     int iLowH = 22;
     int iHighH = 75;
     
-    int iLowS = 60;
+    int iLowS = 30;
     int iHighS = 255;
     
     int iLowV = 30;
@@ -93,14 +93,6 @@ Mat Preprocessor::segment(Mat im){
     
     inRange(image, Scalar(iLowH, iLowS, iLowV), Scalar(iHighH, iHighS, iHighV), imgThresholded); //Threshold the image
     
-    //opening (remove small objects from the foreground)
-    erode(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(7, 7)) );
-    dilate( imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(7, 7)) );
-    
-    //closing (fill small holes in the foreground)
-    dilate( imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(7, 7)) );
-    erode(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(7, 7)) );
-    
     return imgThresholded;
 }
 
@@ -108,40 +100,67 @@ Mat Preprocessor::noisefilter(Mat im){
     Mat3b image = im.clone();
     
     //opening (remove small objects from the foreground)
-    erode(image, image, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)) );
-    dilate( image, image, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)) );
+    erode(image, image, getStructuringElement(MORPH_ELLIPSE, Size(3, 3)) );
+    dilate( image, image, getStructuringElement(MORPH_ELLIPSE, Size(3, 3)) );
     
     //closing (fill small holes in the foreground)
-    dilate( image, image, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)) );
-    erode(image, image, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)) );
+    dilate( image, image, getStructuringElement(MORPH_ELLIPSE, Size(3, 3)) );
+    erode(image, image, getStructuringElement(MORPH_ELLIPSE, Size(3, 3)) );
     
     return image;
 }
 
 Mat Preprocessor::whiteBal(){
     Mat rgbim = src;
-    //return src;
     
     if(rgbim.channels() >= 3)
     {
-        Mat hsv;
+        Mat ycrcb;
         
-        cvtColor(rgbim,hsv,CV_BGR2HSV);
+        cvtColor(rgbim,ycrcb,CV_BGR2YCrCb);
         
         vector<Mat> channels;
-        split(hsv,channels);
+        split(ycrcb,channels);
         
-        normalize(channels[1], channels[1], 0, 255, NORM_MINMAX);
-        normalize(channels[2], channels[2], 0, 255, NORM_MINMAX);
+        equalizeHist(channels[0], channels[0]);
+        (channels[0], channels[0], 0, 255, NORM_MINMAX);
         
         Mat result;
-        merge(channels,hsv);
+        merge(channels,ycrcb);
         
-        cvtColor(hsv,result,CV_HSV2BGR);
+        cvtColor(ycrcb,result,CV_YCrCb2BGR);
         
+        //imshow("White Balance",result);
         return result;
     }
     return Mat();
+    
+//    Mat rgbim = src;
+//    //return src;
+//    
+//    if(rgbim.channels() >= 3)
+//    {
+//        Mat hsv;
+//        
+//        cvtColor(rgbim,hsv,CV_BGR2HSV);
+//        
+//        vector<Mat> channels;
+//        split(hsv,channels);
+//        
+//        //normalize(channels[0], channels[0], 0, 255, NORM_MINMAX);
+//        //normalize(channels[1], channels[1], 0, 255, NORM_MINMAX);
+//        normalize(channels[2], channels[2], 100, 255, NORM_MINMAX);
+//        //equalizeHist(channels[1], channels[1]);
+//        //equalizeHist(channels[2], channels[2]);
+//        
+//        Mat result;
+//        merge(channels,hsv);
+//        
+//        cvtColor(hsv,result,CV_HSV2BGR);
+//        
+//        return result;
+//    }
+//    return Mat();
 }
 
 Mat Preprocessor::cropImage(Mat image){

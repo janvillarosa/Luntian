@@ -16,9 +16,9 @@
 using namespace cv;
 using namespace std;
 
-const String FILE_DIR_SOURCE = "/Users/janvillarosa/Desktop/test images/";
-const String FILE_DIR_PREPROCESSING = "/Users/janvillarosa/git/web-butil/public/Phenotypic Images/Preprocessing/IR64-0";
-const String FILE_DIR_GREENNESS = "/Users/janvillarosa/git/web-butil/public/Phenotypic Images/Greenness/IR64-0";
+const String FILE_DIR_SOURCE = "/Users/janvillarosa/Documents/test images/";
+const String FILE_DIR_PREPROCESSING = "/Users/janvillarosa/git/web-butil/public/Phenotypic Images/Preprocessing/";
+const String FILE_DIR_GREENNESS = "/Users/janvillarosa/git/web-butil/public/Phenotypic Images/Greenness/";
 
 int main(int argc, char *argv[]){
     Mat src;
@@ -148,7 +148,7 @@ int main(int argc, char *argv[]){
                 
                 db_instance.setGreenness_segment(tempDir);
                 
-                biomass_segment=pp_instance.cropImage(biomass_segment);
+                //biomass_segment=pp_instance.cropImage(biomass_segment);
                 
                 tempDir = FILE_DIR_PREPROCESSING; // biomass preprocessing image output
                 if (i < 10){
