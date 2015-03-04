@@ -9,14 +9,14 @@
 #include "Preprocessor.cpp"
 #include "Greenness.cpp"
 #include "Biomass.cpp"
-#include "Capturemodule.cpp"
+//#include "Capturemodule.cpp"
 #include "DatabaseAccess.cpp"
 #include <iostream>
 
 using namespace cv;
 using namespace std;
 
-const String FILE_DIR_SOURCE = "/Users/janvillarosa/Dropbox/Butil - IRRI Project/Images/10-30-2014/IR64-0";
+const String FILE_DIR_SOURCE = "/Users/janvillarosa/Desktop/test images/";
 const String FILE_DIR_PREPROCESSING = "/Users/janvillarosa/git/web-butil/public/Phenotypic Images/Preprocessing/IR64-0";
 const String FILE_DIR_GREENNESS = "/Users/janvillarosa/git/web-butil/public/Phenotypic Images/Greenness/IR64-0";
 
@@ -33,9 +33,9 @@ int main(int argc, char *argv[]){
         
         //CAPTURE MODE: Uses the camera setup for running the phenotyping algorithms
         
-        CaptureModule cp_instance;
-        cp_instance.testCapture();
-        src = cp_instance.getFrame();
+        //CaptureModule cp_instance;
+        //cp_instance.testCapture();
+        //src = cp_instance.getFrame();
         
         int plantHeight = 0; //hardcoded to 0 because height function is not integrated yet
         
@@ -190,10 +190,25 @@ int main(int argc, char *argv[]){
                 double tillerval = 0;
                 
                 db_instance.setValues(heightval, tillerval, greenval, aveWidth, biomassval);
-                db_instance.insertToDB();
+                //db_instance.insertToDB();
             }
         }
         myfile.close();
         gfile.close();
     }
+    return 0;
+}
+
+void splitImage(Mat image){
+    Mat orig = image;
+    Rect roi(0, 0, orig.cols/2, orig.rows);
+    Rect roi_2(orig.cols/2, 0, orig.cols/2, orig.rows);
+    
+    Mat image_roi = orig(roi);
+    image_roi.copyTo(orig);
+    imwrite(FILE_DIR_SOURCE+"sample1", orig);
+    
+    image_roi = orig(roi_2);
+    image_roi.copyTo(orig);
+    imwrite(FILE_DIR_SOURCE+"sample2", orig);
 }

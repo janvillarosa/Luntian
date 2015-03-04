@@ -46,9 +46,9 @@ Mat Preprocessor::rgb_segment(Mat imgThreshold, Mat im){
         }
     }
     
-    Rect roi(0, 0, orig.cols, orig.rows/4 + orig.rows/4 + orig.rows/4);
-    Mat image_roi = orig(roi);
-    image_roi.copyTo(orig);
+    //Rect roi(0, 0, orig.cols, orig.rows/4 + orig.rows/4 + orig.rows/4);
+    //Mat image_roi = orig(roi);
+    //image_roi.copyTo(orig);
     return orig;
 }
 

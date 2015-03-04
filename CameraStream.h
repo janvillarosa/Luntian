@@ -3,7 +3,7 @@
 
 // Standard includes
 #include <stdlib.h>
-#include <conio.h>
+//#include <conio.h>
 #include <iostream>
 #include <iomanip>
 #include <ctime>
@@ -11,16 +11,16 @@
 
 
 //Opencv includes
-#include <opencv\cv.h>
-#include <opencv2\highgui\highgui.hpp>
-#include <opencv2\imgproc\imgproc.hpp>
+#include <opencv/cv.h>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
 
 // Connector Includes
-#include "cppconnection/driver.h"
-#include "cppconnection/exception.h"
-#include "cppconnection/resultset.h"
-#include "cppconnection/statement.h"
-#include "cppconnection/prepared_statement.h"
+#include <cppconnection/driver.h>
+#include <cppconnection/exception.h>
+#include <cppconnection/resultset.h>
+#include <cppconnection/statement.h>
+#include <cppconnection/prepared_statement.h>
 
 #include "CaptureAppointment.h"
 

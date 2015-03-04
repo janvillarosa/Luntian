@@ -1,6 +1,6 @@
 // Standard includes
 #include <stdlib.h>
-#include <conio.h>
+//#include <conio.h>
 #include <iostream>
 #include <iomanip>
 #include <ctime>
@@ -8,9 +8,9 @@
 
 
 //Opencv includes
-#include <opencv\cv.h>
-#include <opencv2\highgui\highgui.hpp>
-#include <opencv2\imgproc\imgproc.hpp>
+#include <opencv/cv.h>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
 
 // Connector Includes
 #include "mysql_connection.h"
