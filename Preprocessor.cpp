@@ -53,7 +53,7 @@ Mat Preprocessor::rgb_segment(Mat imgThreshold, Mat im){
 }
 
 Mat Preprocessor::bin_segment(Mat wBal){
-    Rect roi(600, 2300, 700, 300); 
+	Rect roi(wBal.cols / 4, (wBal.rows / 4) * 3, wBal.cols / 3, wBal.rows / 10); //Updated but still for improvement
     Mat src_roi = wBal(roi);        
     src_roi.copyTo(wBal);      
     
@@ -186,7 +186,7 @@ Mat Preprocessor::cropImage(Mat image){
         k--;
     }
     
-    Rect roi(i, 0, k - i, 300);
+	Rect roi(i, 0, k - i, image.rows); //Updated for scalability
     Mat image_roi = image(roi);
     image_roi.copyTo(image);
     //imshow("New Crop",image);
