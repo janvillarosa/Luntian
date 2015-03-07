@@ -71,6 +71,6 @@ double Biomass::computePixelToInchValue(double pixelRadius, int potPixelCount, d
 
 double Biomass::convertPixelToCm(double pixelRadius, int potPixelCount, double potActualInchDimension){
 
-	return pixelRadius / computePixelToInchValue(pixelRadius, potPixelCount, potActualInchDimension0)*2.54;
+	return pixelRadius / computePixelToInchValue(pixelRadius, potPixelCount, potActualInchDimension)*2.54;
 }
 

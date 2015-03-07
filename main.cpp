@@ -84,9 +84,11 @@ int main(int argc, char *argv[]){
         //IMPORTANT: BEFORE RETRIEVING BIOMASS, BE SURE TO INTEGRATE THE HEIGHT ALGORITHM FROM SEIGHT
         
         Biomass b_instance;
+		int potPixelCount = 210;
+		double potActualInchDimension = 10;
         
         double aveWidth = b_instance.getPlantWidth(biomass_segment);
-        double biomassval = b_instance.computePlantBiomass(b_instance.convertPixelToCm(b_instance.computePlantRadius(aveWidth)), h1[plantHeight - 1]);
+		double biomassval = b_instance.computePlantBiomass(b_instance.convertPixelToCm(b_instance.computePlantRadius(aveWidth), potPixelCount, potActualInchDimension), h1[plantHeight - 1]);
         cout << biomassval << endl;
         
         //HARDCODED HEIGHT AND TILLER VALUES, THIS WILL BE GONE WHEN INTEGRATION WITH SEIGHT IS FINISHED
