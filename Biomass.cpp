@@ -20,7 +20,8 @@ public:
 	double getPlantWidth(Mat);
 	double computePlantRadius(double);
 	double computePlantBiomass(double, double);
-	double convertPixelToCm(double);
+	double computePixelToInchValue(double, int, double);
+	double convertPixelToCm(double, int, double);
 	void setSrc(Mat);
 };
 
@@ -62,7 +63,14 @@ double Biomass::computePlantBiomass(double radius, double height){
 	return M_PI*radius*radius*height;
 }
 
-double Biomass::convertPixelToCm(double radius){
-	return radius*25.4/932;
+
+double Biomass::computePixelToInchValue(double pixelRadius, int potPixelCount, double potActualInchDimension){
+
+	return potPixelCount / potActualInchDimension;
+}
+
+double Biomass::convertPixelToCm(double pixelRadius, int potPixelCount, double potActualInchDimension){
+
+	return pixelRadius / computePixelToInchValue(pixelRadius, potPixelCount, potActualInchDimension0)*2.54;
 }
 
