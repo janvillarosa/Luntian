@@ -135,7 +135,7 @@ int main(int argc, char *argv[]){
                 db_instance.setPrepro_segment(tempDir);
                 
                 Mat  biomass_segment = pp_instance.bin_segment(wBal);
-                Mat  green_segment = pp_instance.noisefilter(pp_instance.rgb_segment(pp_instance.segment(wBal),wBal));
+                Mat  green_segment = pp_instance.cropRGBImage(pp_instance.noisefilter(pp_instance.rgb_segment(pp_instance.segment(wBal),wBal)));
                 
                 tempDir = FILE_DIR_PREPROCESSING; //image segmentation image output
                 if (i < 10){

@@ -21,6 +21,7 @@ class Preprocessor{
         Mat cropImage(Mat);
         Mat bin_segment(Mat);
         Mat rgb_segment(Mat, Mat);
+        Mat cropRGBImage(Mat);
 };
 
 void Preprocessor::setSrc(Mat source){
@@ -30,13 +31,10 @@ void Preprocessor::setSrc(Mat source){
 Mat Preprocessor::rgb_segment(Mat imgThreshold, Mat im){
     Mat imgThresholded;
     Mat3b orig = im.clone();
-
     
     cvtColor(imgThreshold, imgThresholded, CV_GRAY2BGR);
     //bitwise_not(imgThresholded, imgThreshold);
     bitwise_or(imgThresholded, orig, orig);
-    
-    int plantheight;
     
     for (Mat3b::iterator it = orig.begin(); it != orig.end(); it++) {
         Vec3b hsv = *it;
@@ -56,22 +54,18 @@ Mat Preprocessor::rgb_segment(Mat imgThreshold, Mat im){
         int G=hsv.val[1];
         int R=hsv.val[2];
         
-        if((B >= 60 && R >= 60)){
+        if((B >= 80 && R >= 50)){
             *it = Vec3b(255,255,255);
         } else {
         }
     }
-    
-//    Rect roi(0, 0, orig.cols, orig.rows/6 + orig.rows/6 + orig.rows/6+orig.rows/6 + orig.rows/6);
-//    Mat image_roi = orig(roi);
-//    image_roi.copyTo(orig);
     return orig;
 }
 
 Mat Preprocessor::bin_segment(Mat wBal){
 	Rect roi(wBal.cols / 4, (wBal.rows / 5) * 4, wBal.cols / 2, wBal.rows / 9); //Updated but still for improvement
-    Mat src_roi = wBal(roi);        
-    src_roi.copyTo(wBal);      
+    Mat src_roi = wBal(roi);
+    src_roi.copyTo(wBal);
     
     Mat src_gray;                               
     cvtColor(wBal, src_gray, CV_RGB2GRAY);  
@@ -89,10 +83,11 @@ Mat Preprocessor::bin_segment(Mat wBal){
 }
 
 Mat Preprocessor::segment(Mat im){
-
+    
     Mat image;
     Mat orig = im.clone();
     Mat result;
+
     
     int iLowH = 20;
     int iHighH = 95;
@@ -113,12 +108,12 @@ Mat Preprocessor::segment(Mat im){
     //bitwise_not(imgThresholded, imgThresholded);
     
     //opening (remove small objects from the foreground)
-    erode(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(3, 3)) );
-    dilate(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(3, 3)) );
+    erode(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)) );
+    dilate(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)) );
     
     //closing (fill small holes in the foreground)
-    dilate(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(3, 3)) );
-    erode(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(3, 3)) );
+    dilate(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)) );
+    erode(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)) );
     
     return imgThresholded;
 }
@@ -127,44 +122,19 @@ Mat Preprocessor::noisefilter(Mat im){
     Mat3b image = im.clone();
     
     //opening (remove small objects from the foreground)
-    erode(image, image, getStructuringElement(MORPH_ELLIPSE, Size(3, 3)) );
-    dilate( image, image, getStructuringElement(MORPH_ELLIPSE, Size(3, 3)) );
+    erode(image, image, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)) );
+    dilate( image, image, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)) );
     
     //closing (fill small holes in the foreground)
-    dilate( image, image, getStructuringElement(MORPH_ELLIPSE, Size(3, 3)) );
-    erode(image, image, getStructuringElement(MORPH_ELLIPSE, Size(3, 3)) );
+    dilate( image, image, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)) );
+    erode(image, image, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)) );
     
     return image;
 }
 
 Mat Preprocessor::whiteBal(){
-//    Mat rgbim = src;
-//    
-//    if(rgbim.channels() >= 3)
-//    {
-//        Mat ycrcb;
-//        
-//        cvtColor(rgbim,ycrcb,CV_BGR2YCrCb);
-//        
-//        vector<Mat> channels;
-//        split(ycrcb,channels);
-//        
-//        //equalizeHist(channels[0], channels[0]);
-//        normalize(channels[0], channels[0], 50, 255, NORM_MINMAX);
-//        normalize(channels[0], channels[0], 0, 225, NORM_MINMAX);
-//        
-//        Mat result;
-//        merge(channels,ycrcb);
-//        
-//        cvtColor(ycrcb,result,CV_YCrCb2BGR);
-//        
-//        //imshow("White Balance",result);
-//        return result;
-//    }
-//    return Mat();
     
     Mat rgbim = src;
-    //return src;
     
     if(rgbim.channels() >= 3)
     {
@@ -176,9 +146,7 @@ Mat Preprocessor::whiteBal(){
         split(hsv,channels);
         
         normalize(channels[1], channels[1], 0, 255, NORM_MINMAX);
-        normalize(channels[2], channels[2], 0, 255, NORM_MINMAX);
-        //equalizeHist(channels[1], channels[1]);
-        //equalizeHist(channels[2], channels[2]);
+        normalize(channels[2], channels[2], 20, 255, NORM_MINMAX);
         
         Mat result;
         merge(channels,hsv);
@@ -188,6 +156,35 @@ Mat Preprocessor::whiteBal(){
         return result;
     }
     return Mat();
+}
+
+Mat Preprocessor::cropRGBImage(Mat image){
+    
+    int i = 0;
+    bool notFound = true;
+    
+    while (notFound && i<image.rows - 1){
+        for (int j = 0; j < image.cols; ++j)
+        {
+            if (image.at<uchar>(i, j) != 255)
+            {
+                notFound = false;
+                
+            }
+            else
+            {
+            }
+        }
+        
+        i++;
+    }
+    
+    Rect roi(0, i, image.cols, (image.rows-i)/4 + (image.rows-i)/4 + (image.rows-i)/4); //Updated for scalability
+    Mat image_roi = image(roi);
+    image_roi.copyTo(image);
+    //imshow("New Crop",image);
+    
+    return image;
 }
 
 Mat Preprocessor::cropImage(Mat image){
