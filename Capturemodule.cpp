@@ -1,6 +1,6 @@
 // Standard includes
 #include <stdlib.h>
-//#include <conio.h>
+#include <conio.h>
 #include <iostream>
 #include <iomanip>
 #include <ctime>
@@ -8,18 +8,16 @@
 
 
 //Opencv includes
-#include <opencv/cv.h>
-#include <opencv2/highgui/highgui.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv\cv.h>
+#include <opencv2\highgui\highgui.hpp>
+#include <opencv2\imgproc\imgproc.hpp>
 
 // Connector Includes
-#include "mysql_connection.h"
-
-#include <cppconn/driver.h>
-#include <cppconn/exception.h>
-#include <cppconn/resultset.h>
-#include <cppconn/statement.h>
-#include <cppconn/prepared_statement.h>
+#include "cppconnection/driver.h"
+#include "cppconnection/exception.h"
+#include "cppconnection/resultset.h"
+#include "cppconnection/statement.h"
+#include "cppconnection/prepared_statement.h"
 
 // Capture Appointment Object
 #include "CaptureAppointment.h"
@@ -85,7 +83,7 @@ int main(void)
 
 			if (curr_time - prev_time >= 10){
 				for (i = 0; i < cameras.size(); i++){
-					cameras[i]->checkNextAppointment(stmt, res);
+					cameras[i]->checkNextAppointment(con);
 				}
 				prev_time = time(NULL);
 			}

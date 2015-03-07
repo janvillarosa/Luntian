@@ -3,18 +3,18 @@
 #define __CAPTUREAPPOINTMENT_H_INCLUDED__
 
 #include <stdlib.h>
-//#include <conio.h>
+#include <conio.h>
 #include <iostream>
 #include <iomanip>
 #include <ctime>
 #include <time.h>
 
 // Connector Includes
-#include <cppconn/driver.h>
-#include <cppconn/exception.h>
-#include <cppconn/resultset.h>
-#include <cppconn/statement.h>
-#include <cppconn/prepared_statement.h>
+#include "cppconnection/driver.h"
+#include "cppconnection/exception.h"
+#include "cppconnection/resultset.h"
+#include "cppconnection/statement.h"
+#include "cppconnection/prepared_statement.h"
 
 
 using namespace std;

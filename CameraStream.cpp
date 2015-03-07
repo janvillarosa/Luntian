@@ -1,4 +1,7 @@
 #include "CameraStream.h"
+#include "Image.h"
+#include "PhenotypicData.h"
+#include <thread>
 
 //Camera Stream Methods
 CameraStream::CameraStream(int camera_id, string camera_username, string camera_password, string ipAddress){
@@ -6,6 +9,39 @@ CameraStream::CameraStream(int camera_id, string camera_username, string camera_
 	this->camera_username = camera_username;
 	this->camera_password = camera_password;
 	this->ipAddress = ipAddress;
+}
+
+//Image Processing Thread
+void processImage(Image* img, sql::Connection *con){
+	sql::Statement *stmt = con->createStatement();
+	sql::ResultSet *res;
+
+
+
+	//Image Processing
+	img->setHeightPath(img->getRawPath());
+	img->setTillerPath(img->getRawPath());
+	img->setGreenPath(img->getRawPath());
+	img->setBiomassPath(img->getRawPath());
+
+	img->insertToDatabase(con);
+
+	std::stringstream sstm;
+	sstm << "SELECT ID FROM image WHERE raw_path ='" << img->getRawPath() << "'";
+	res = stmt->executeQuery(sstm.str());
+
+	res->next();
+	PhenotypicData *data = new PhenotypicData(res->getInt("ID"));
+
+	data->setHeight(1.123);
+	data->setTillerCount(19);
+	data->setGreeness(9.642);
+	data->setDiameter(0.532);
+	data->setBiomass(4.183);
+
+	data->insertToDatabase(con);
+
+	cout << "Image Saved!" << endl;
 }
 
 void CameraStream::checkAppointment(sql::Connection *con){
@@ -19,11 +55,55 @@ void CameraStream::checkAppointment(sql::Connection *con){
 					cap >> frame;
 
 					/*PERFORM IMAGE PROCESSING HERE*/
-					std::stringstream image_name;
-					image_name << camera_id << "-" << next_appointment->getDateTimeFileString() << ".jpeg";
 
-					imwrite(image_name.str(), frame);
-					cout << "Image Saved!" << endl;
+					//Get plant details
+					sql::Statement *stmt = con->createStatement();
+					sql::ResultSet *res;
+					
+
+					int left_plant_id;
+					int right_plant_id;
+					string left_plant_stage;
+					string right_plant_stage;
+					string left_plant_name;
+					string right_plant_name;
+
+					std::stringstream sstm;
+					sstm << "SELECT plant.ID, plant.Plant_Name, plant.Plant_Stage FROM plant INNER JOIN camera ON camera.Current_Left_Plant_ID = plant.ID WHERE camera.ID =" << camera_id;
+					res = stmt->executeQuery(sstm.str());
+
+					if (res->next()){
+						left_plant_id = res->getInt("ID");
+						left_plant_name = res->getString("Plant_Name");
+						left_plant_stage = res->getString("Plant_Stage");
+
+						std::stringstream image_name;
+						image_name << left_plant_name << "-" << next_appointment->getDateTimeFileString() << ".jpeg";
+						imwrite(image_name.str(), frame);//replace frame with splted image
+						Image* leftImage = new Image(left_plant_id, next_appointment->getDateTaken(), left_plant_stage, image_name.str());//replace image_name from splited image
+						processImage(leftImage, con);
+					}
+
+					delete res;
+
+					std::stringstream sstm2;
+					sstm2 << "SELECT plant.ID, plant.Plant_Name, plant.Plant_Stage FROM plant INNER JOIN camera ON camera.Current_Right_Plant_ID = plant.ID WHERE camera.ID =" << camera_id;
+					res = stmt->executeQuery(sstm2.str());
+
+					if (res->next()){
+						right_plant_id = res->getInt("ID");
+						right_plant_name = res->getString("Plant_Name");
+						right_plant_stage = res->getString("Plant_Stage");
+
+						std::stringstream image_name2;
+						image_name2 << right_plant_name << "-" << next_appointment->getDateTimeFileString() << ".jpeg";
+						imwrite(image_name2.str(), frame);//replace frame with splted image
+						Image* rightImage = new Image(right_plant_id, next_appointment->getDateTaken(), right_plant_stage, image_name2.str());//replace image_name from splited image
+						processImage(rightImage, con);
+					}
+
+					delete res;
+
 				}
 				cap.release();
 				/*Create new appointment if interval is daily or weekly*/
@@ -37,8 +117,11 @@ void CameraStream::checkAppointment(sql::Connection *con){
 		}
 }
 
-void CameraStream::checkNextAppointment(sql::Statement *stmt, sql::ResultSet *res){
+void CameraStream::checkNextAppointment(sql::Connection *con){
 	/*Check if new next appointment is needed*/
+	sql::Statement *stmt = con->createStatement();
+	sql::ResultSet *res;
+
 	std::stringstream sstm;
 	sstm << "SELECT * FROM `camera_appointment` WHERE `Date_taken` > now() AND `Camera_ID` = " << camera_id << " order by Date_Taken asc LIMIT 1;";
 	string select_next_appointment_query = sstm.str();

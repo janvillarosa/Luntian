@@ -3,7 +3,7 @@
 
 // Standard includes
 #include <stdlib.h>
-//#include <conio.h>
+#include <conio.h>
 #include <iostream>
 #include <iomanip>
 #include <ctime>
@@ -11,18 +11,20 @@
 
 
 //Opencv includes
-#include <opencv/cv.h>
-#include <opencv2/highgui/highgui.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv\cv.h>
+#include <opencv2\highgui\highgui.hpp>
+#include <opencv2\imgproc\imgproc.hpp>
 
 // Connector Includes
-#include <cppconnection/driver.h>
-#include <cppconnection/exception.h>
-#include <cppconnection/resultset.h>
-#include <cppconnection/statement.h>
-#include <cppconnection/prepared_statement.h>
+#include "cppconnection/driver.h"
+#include "cppconnection/exception.h"
+#include "cppconnection/resultset.h"
+#include "cppconnection/statement.h"
+#include "cppconnection/prepared_statement.h"
 
 #include "CaptureAppointment.h"
+
+#include "Image.h"
 
 using namespace cv;
 using namespace std;
@@ -42,7 +44,7 @@ private://Atrributes
 public://Methods
 	CameraStream(int camera_id, string camera_username, string camera_password, string ipAddress);
 	void checkAppointment(sql::Connection *con);
-	void checkNextAppointment(sql::Statement *stmt, sql::ResultSet *res);
+	void checkNextAppointment(sql::Connection *con);
 };
 
 #endif
