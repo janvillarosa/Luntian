@@ -1,6 +1,6 @@
  //
 //  Greenness module for determining greenness of plant
-//  OpenCVDEmo
+//  Luntian
 //
 //  Created by Jan Villarosa on 11/3/14.
 //  Copyright (c) 2014 Jan Villarosa. All rights reserved.
@@ -124,29 +124,29 @@ Scalar HSVtoRGBcvScalar(int H, int S, int V) {
 
 float Greenness::compareLCCValues(int H){
     
-    float val1 = abs(H-40.5);
-    float val2 = abs(H-46);
-    float val3 = abs(H-50.5);
-    float val4 = abs(H-56.5);
+    float val1 = abs(H-20);
+    float val2 = abs(H-30);
+    float val3 = abs(H-40);
+    float val4 = abs(H-55);
     
-    if (H<39.5){
+    if (H<15){
         return 1.5;
     } else if(val1<val2 && val1<val3 && val1<val4){
-        if(val1 < 1){
+        if(val1 < 5){
             return 2;
         }
         else{
             return 2.5;
         }
     }else if(val2<val1 && val2<val3 && val2<val4){
-        if(val2 < 1){
+        if(val2 < 5){
             return 3;
         }
         else{
             return 3.5;
         }
     }else if(val3<val1 && val3<val2 && val3<val4){
-        if(val2 < 1){
+        if(val2 < 5){
             return 4;
         }
         else{
@@ -190,22 +190,22 @@ float Greenness::greenness(Mat im){
     cvtColor(image, image, CV_HSV2BGR);
     
     char name[30];
-//    sprintf(name,"Average H=%d",aveH/pixelct);
-//    putText(image,name, Point(40,80) , FONT_HERSHEY_SIMPLEX, 2, Scalar(0,0,0), 2,8,false );
-//    
-//    sprintf(name,"Average S=%d",aveS/pixelct);
-//    putText(image,name, Point(40,160) , FONT_HERSHEY_SIMPLEX, 2, Scalar(0,0,0), 2,8,false );
-//    
-//    sprintf(name,"Average V=%d",aveV/pixelct);
-//    putText(image,name, Point(40,240) , FONT_HERSHEY_SIMPLEX, 2, Scalar(0,0,0), 2,8,false );
-//    
-//    sprintf(name,"Pixels=%d",pixelct);
-//    putText(image,name, Point(40,320) , FONT_HERSHEY_SIMPLEX, 2, Scalar(0,0,0), 2,8,false );
-//    
-//    sprintf(name,"LCC Value: %.1f", lccval);
-//    putText(image,name, Point(40,400) , FONT_HERSHEY_SIMPLEX, 2, Scalar(0,0,0), 2,8,false );
-//    
-//    rectangle(image, Point(40,420), Point(140,520), HSVtoRGBcvScalar(aveH/pixelct, aveS/pixelct, aveV/pixelct),CV_FILLED);
+    sprintf(name,"Average H=%d",aveH/pixelct);
+    putText(image,name, Point(10,20) , FONT_HERSHEY_SIMPLEX, .5, Scalar(0,0,0), 2,8,false );
+    
+    sprintf(name,"Average S=%d",aveS/pixelct);
+    putText(image,name, Point(10,50) , FONT_HERSHEY_SIMPLEX, .5, Scalar(0,0,0), 2,8,false );
+    
+    sprintf(name,"Average V=%d",aveV/pixelct);
+    putText(image,name, Point(10,80) , FONT_HERSHEY_SIMPLEX, .5, Scalar(0,0,0), 2,8,false );
+    
+    sprintf(name,"Pixels=%d",pixelct);
+    putText(image,name, Point(10,110) , FONT_HERSHEY_SIMPLEX, .5, Scalar(0,0,0), 2,8,false );
+    
+    sprintf(name,"LCC Value: %.1f", lccval);
+    putText(image,name, Point(10,140) , FONT_HERSHEY_SIMPLEX, .5, Scalar(0,0,0), 2,8,false );
+    
+    rectangle(image, Point(10,150), Point(30,170), HSVtoRGBcvScalar(aveH/pixelct, aveS/pixelct, aveV/pixelct),CV_FILLED);
     
     result = image;
     

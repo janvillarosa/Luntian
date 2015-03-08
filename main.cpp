@@ -64,7 +64,7 @@ int main(int argc, char *argv[]){
         
         db_instance.setBiomass_segment(tempDir);
         
-        Mat  green_segment = pp_instance.noisefilter(pp_instance.rgb_segment(pp_instance.segment(wBal),wBal));
+        Mat  green_segment = pp_instance.noisefilter(pp_instance.segment(wBal));
         
         Greenness g_instance;
         

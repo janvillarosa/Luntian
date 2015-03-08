@@ -36,6 +36,7 @@ Mat Preprocessor::rgb_segment(Mat imgThreshold, Mat im){
     //bitwise_not(imgThresholded, imgThreshold);
     bitwise_or(imgThresholded, orig, orig);
     
+    
     for (Mat3b::iterator it = orig.begin(); it != orig.end(); it++) {
         Vec3b hsv = *it;
         int B=hsv.val[0];
@@ -54,7 +55,7 @@ Mat Preprocessor::rgb_segment(Mat imgThreshold, Mat im){
         int G=hsv.val[1];
         int R=hsv.val[2];
         
-        if((B >= 80 && R >= 50)){
+        if((B >= 50 && R >= 50)){
             *it = Vec3b(255,255,255);
         } else {
         }
@@ -84,12 +85,11 @@ Mat Preprocessor::bin_segment(Mat wBal){
 
 Mat Preprocessor::segment(Mat im){
     
-    Mat image;
-    Mat orig = im.clone();
+    Mat image = im.clone();
     Mat result;
 
     
-    int iLowH = 20;
+    int iLowH = 40;
     int iHighH = 95;
     
     int iLowS = 0;
@@ -98,14 +98,18 @@ Mat Preprocessor::segment(Mat im){
     int iLowV = 0;
     int iHighV = 255;
     
-    cvtColor(orig,image,CV_RGB2GRAY);
+    cvtColor(image,image,CV_RGB2GRAY);
     
     Mat imgThresholded;
+    Mat imgThresholded2;
     
     //inRange(image, Scalar(iLowH, iLowS, iLowV), Scalar(iHighH, iHighS, iHighV), imgThresholded); //Threshold the image
     threshold(image, imgThresholded, 200, 255, THRESH_OTSU);
-    //inRange(image, Scalar(iLowH, iLowS, iLowV), Scalar(iHighH, iHighS, iHighV), imgThresholded);
-    //bitwise_not(imgThresholded, imgThresholded);
+    inRange(image, Scalar(iLowH, iLowS, iLowV), Scalar(iHighH, iHighS, iHighV), imgThresholded2);
+    bitwise_not(imgThresholded, imgThresholded);
+    bitwise_or(imgThresholded, imgThresholded2, imgThresholded);
+    bitwise_not(imgThresholded, imgThresholded);
+    
     
     //opening (remove small objects from the foreground)
     erode(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)) );
@@ -134,7 +138,12 @@ Mat Preprocessor::noisefilter(Mat im){
 
 Mat Preprocessor::whiteBal(){
     
-    Mat rgbim = src;
+    Mat image = src;
+    Mat rgbim;
+    
+    Rect roi(0, 0, image.cols, image.rows-40); //Updated for scalability
+    Mat image_roi = image(roi);
+    image_roi.copyTo(rgbim);
     
     if(rgbim.channels() >= 3)
     {
