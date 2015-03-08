@@ -20,7 +20,7 @@ class Greenness{
     Mat result;
     
 public:
-    float compareLCCValues(int);
+    float compareLCCValues(int,int,int);
     float greenness(Mat);
     Mat getResult();
 };
@@ -122,31 +122,29 @@ Scalar HSVtoRGBcvScalar(int H, int S, int V) {
     return Scalar(bB,bG,bR);
 }
 
-float Greenness::compareLCCValues(int H){
+float Greenness::compareLCCValues(int H, int S, int V){
     
-    float val1 = abs(H-20);
-    float val2 = abs(H-30);
-    float val3 = abs(H-40);
-    float val4 = abs(H-55);
+    float val1 = abs(H-40);
+    float val2 = abs(H-45);
+    float val3 = abs(H-50);
+    float val4 = abs(H-70);
     
-    if (H<15){
-        return 1.5;
-    } else if(val1<val2 && val1<val3 && val1<val4){
-        if(val1 < 5){
+    if(val1<val2 && val1<val3 && val1<val4){
+        if(val1 <= 2.5){
             return 2;
         }
         else{
             return 2.5;
         }
     }else if(val2<val1 && val2<val3 && val2<val4){
-        if(val2 < 5){
+        if(val2 <= 2.5){
             return 3;
         }
         else{
             return 3.5;
         }
     }else if(val3<val1 && val3<val2 && val3<val4){
-        if(val2 < 5){
+        if(val3 <= 10){
             return 4;
         }
         else{
@@ -183,7 +181,8 @@ float Greenness::greenness(Mat im){
         } else {
         }
     }
-    float lccval = compareLCCValues(aveH/pixelct);
+    
+    float lccval = compareLCCValues(aveH/pixelct,aveS/pixelct,aveV/pixelct);
     lccval = floor(lccval * 1000.0) / 1000.0;
     
     

@@ -55,7 +55,7 @@ Mat Preprocessor::rgb_segment(Mat imgThreshold, Mat im){
         int G=hsv.val[1];
         int R=hsv.val[2];
         
-        if((B >= 50 && R >= 50)){
+        if((B >= 80 && R >= 50)){
             *it = Vec3b(255,255,255);
         } else {
         }
@@ -79,7 +79,6 @@ Mat Preprocessor::segment(Mat im){
     
     Mat image = im.clone();
     Mat result;
-
     
     int iLowH = 40;
     int iHighH = 95;
@@ -142,11 +141,11 @@ Mat Preprocessor::whiteBal(){
         Mat hsv;
         
         cvtColor(rgbim,hsv,CV_BGR2HSV);
-        
         vector<Mat> channels;
         split(hsv,channels);
         
-        normalize(channels[1], channels[1], 0, 255, NORM_MINMAX);
+        //normalize(channels[0], channels[0], 0, 100, NORM_MINMAX);
+        normalize(channels[1], channels[1], 10, 255, NORM_MINMAX);
         normalize(channels[2], channels[2], 20, 255, NORM_MINMAX);
         
         Mat result;
