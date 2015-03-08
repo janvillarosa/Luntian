@@ -72,14 +72,6 @@ Mat Preprocessor::bin_segment(Mat wBal){
     cvtColor(wBal, src_gray, CV_RGB2GRAY);  
     threshold(src_gray, wBal, 170, 255, THRESH_OTSU);
     
-    //opening (remove small objects from the foreground)
-    erode(wBal, wBal, getStructuringElement(MORPH_ELLIPSE, Size(1, 1)) );
-    dilate( wBal, wBal, getStructuringElement(MORPH_ELLIPSE, Size(1, 1)) );
-    
-    //closing (fill small holes in the foreground)
-    dilate( wBal, wBal, getStructuringElement(MORPH_ELLIPSE, Size(1, 1)) );
-    erode(wBal, wBal, getStructuringElement(MORPH_ELLIPSE, Size(1, 1)) );
-    
     return wBal;
 }
 
