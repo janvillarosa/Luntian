@@ -12,6 +12,8 @@ using namespace cv;
 
 class Preprocessor{
     Mat src;
+    int imgRow;
+    int imgCol;
     
     public:
         Mat segment(Mat);
@@ -55,8 +57,8 @@ Mat Preprocessor::rgb_segment(Mat imgThreshold, Mat im){
         int G=hsv.val[1];
         int R=hsv.val[2];
         
-        if((B >= 80 && R >= 50)){
-            *it = Vec3b(255,255,255);
+        if((B >= 70 && R >= 50)){
+           *it = Vec3b(255,255,255);
         } else {
         }
     }
@@ -77,35 +79,22 @@ Mat Preprocessor::bin_segment(Mat wBal){
 
 Mat Preprocessor::segment(Mat im){
     
+    Mat imgThresholded;
     Mat image = im.clone();
-    Mat result;
-    
-    int iLowH = 20;
-    int iHighH = 100;
-    
-    int iLowS = 0;
-    int iHighS = 255;
-    
-    int iLowV = 0;
-    int iHighV = 255;
     
     cvtColor(image,image,CV_RGB2GRAY);
     
-    Mat imgThresholded;
-    Mat imgThresholded2;
     
-    //inRange(image, Scalar(iLowH, iLowS, iLowV), Scalar(iHighH, iHighS, iHighV), imgThresholded); //Threshold the image
-    //bitwise_not(imgThresholded, imgThresholded);
-    threshold(image, imgThresholded, 200, 255, THRESH_BINARY);
+    threshold(image, imgThresholded, 210, 255, THRESH_OTSU);
     
     
-//    //opening (remove small objects from the foreground)
-//    erode(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)) );
-//    dilate(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)) );
-//    
-//    //closing (fill small holes in the foreground)
-//    dilate(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)) );
-//    erode(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)) );
+    //opening (remove small objects from the foreground)
+    erode(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)) );
+    dilate(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)) );
+    
+    //closing (fill small holes in the foreground)
+    dilate(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)) );
+    erode(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)) );
     
     return imgThresholded;
 }
@@ -176,7 +165,10 @@ Mat Preprocessor::cropRGBImage(Mat image){
         i++;
     }
     
-    Rect roi(0, i, image.cols, (image.rows-i)/4 + (image.rows-i)/4 + (image.rows-i)/4); //Updated for scalability
+    imgCol=i;
+    imgRow=(image.rows-i)/4 + (image.rows-i)/4 + (image.rows-i)/4;
+    
+    Rect roi(0, imgCol, image.cols, imgRow); //Updated for scalability
     Mat image_roi = image(roi);
     image_roi.copyTo(image);
     //imshow("New Crop",image);
