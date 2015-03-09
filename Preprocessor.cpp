@@ -80,8 +80,8 @@ Mat Preprocessor::segment(Mat im){
     Mat image = im.clone();
     Mat result;
     
-    int iLowH = 40;
-    int iHighH = 95;
+    int iLowH = 20;
+    int iHighH = 100;
     
     int iLowS = 0;
     int iHighS = 255;
@@ -95,20 +95,17 @@ Mat Preprocessor::segment(Mat im){
     Mat imgThresholded2;
     
     //inRange(image, Scalar(iLowH, iLowS, iLowV), Scalar(iHighH, iHighS, iHighV), imgThresholded); //Threshold the image
-    threshold(image, imgThresholded, 200, 255, THRESH_OTSU);
-    inRange(image, Scalar(iLowH, iLowS, iLowV), Scalar(iHighH, iHighS, iHighV), imgThresholded2);
-    bitwise_not(imgThresholded, imgThresholded);
-    bitwise_or(imgThresholded, imgThresholded2, imgThresholded);
-    bitwise_not(imgThresholded, imgThresholded);
+    //bitwise_not(imgThresholded, imgThresholded);
+    threshold(image, imgThresholded, 200, 255, THRESH_BINARY);
     
     
-    //opening (remove small objects from the foreground)
-    erode(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)) );
-    dilate(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)) );
-    
-    //closing (fill small holes in the foreground)
-    dilate(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)) );
-    erode(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)) );
+//    //opening (remove small objects from the foreground)
+//    erode(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)) );
+//    dilate(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)) );
+//    
+//    //closing (fill small holes in the foreground)
+//    dilate(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)) );
+//    erode(imgThresholded, imgThresholded, getStructuringElement(MORPH_ELLIPSE, Size(2, 2)) );
     
     return imgThresholded;
 }
