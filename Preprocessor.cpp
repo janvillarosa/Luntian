@@ -12,8 +12,6 @@ using namespace cv;
 
 class Preprocessor{
     Mat src;
-    int imgRow;
-    int imgCol;
     
     public:
         Mat segment(Mat);
@@ -57,8 +55,8 @@ Mat Preprocessor::rgb_segment(Mat imgThreshold, Mat im){
         int G=hsv.val[1];
         int R=hsv.val[2];
         
-        if((B >= 70 && R >= 50)){
-           *it = Vec3b(255,255,255);
+        if((B >= 80 && R >= 50)){
+            *it = Vec3b(255,255,255);
         } else {
         }
     }
@@ -79,13 +77,29 @@ Mat Preprocessor::bin_segment(Mat wBal){
 
 Mat Preprocessor::segment(Mat im){
     
-    Mat imgThresholded;
     Mat image = im.clone();
+    Mat result;
+    
+    int iLowH = 40;
+    int iHighH = 95;
+    
+    int iLowS = 0;
+    int iHighS = 255;
+    
+    int iLowV = 0;
+    int iHighV = 255;
     
     cvtColor(image,image,CV_RGB2GRAY);
     
+    Mat imgThresholded;
+    Mat imgThresholded2;
     
-    threshold(image, imgThresholded, 210, 255, THRESH_OTSU);
+    //inRange(image, Scalar(iLowH, iLowS, iLowV), Scalar(iHighH, iHighS, iHighV), imgThresholded); //Threshold the image
+    threshold(image, imgThresholded, 200, 255, THRESH_OTSU);
+    inRange(image, Scalar(iLowH, iLowS, iLowV), Scalar(iHighH, iHighS, iHighV), imgThresholded2);
+    bitwise_not(imgThresholded, imgThresholded);
+    bitwise_or(imgThresholded, imgThresholded2, imgThresholded);
+    bitwise_not(imgThresholded, imgThresholded);
     
     
     //opening (remove small objects from the foreground)
@@ -165,10 +179,7 @@ Mat Preprocessor::cropRGBImage(Mat image){
         i++;
     }
     
-    imgCol=i;
-    imgRow=(image.rows-i)/4 + (image.rows-i)/4 + (image.rows-i)/4;
-    
-    Rect roi(0, imgCol, image.cols, imgRow); //Updated for scalability
+    Rect roi(0, i, image.cols, (image.rows-i)/4 + (image.rows-i)/4 + (image.rows-i)/4); //Updated for scalability
     Mat image_roi = image(roi);
     image_roi.copyTo(image);
     //imshow("New Crop",image);
