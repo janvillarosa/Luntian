@@ -57,7 +57,7 @@ Mat Preprocessor::rgb_segment(Mat imgThreshold, Mat im){
         int G=hsv.val[1];
         int R=hsv.val[2];
         
-        if((B >= 70 && R >= 50)){
+        if((B >= 80 && R >= 50)){
            *it = Vec3b(255,255,255);
         } else {
         }
@@ -85,7 +85,7 @@ Mat Preprocessor::segment(Mat im){
     cvtColor(image,image,CV_RGB2GRAY);
     
     
-    threshold(image, imgThresholded, 210, 255, THRESH_OTSU);
+    threshold(image, imgThresholded, 190, 255, THRESH_OTSU);
     
     
     //opening (remove small objects from the foreground)
