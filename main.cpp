@@ -6,6 +6,8 @@
 //  Copyright (c) 2014 Jan Villarosa. All rights reserved.
 //
 
+//THIS CODE IS USED FOR MANUAL UPLOAD OF IMAGES
+
 #include "Preprocessor.cpp"
 #include "Greenness.cpp"
 #include "Biomass.cpp"
@@ -21,86 +23,14 @@ const String FILE_DIR_PREPROCESSING = "/Users/janvillarosa/git/web-butil/public/
 const String FILE_DIR_GREENNESS = "/Users/janvillarosa/git/web-butil/public/Phenotypic Images/Greenness/";
 
 int main(int argc, char *argv[]){
-    Mat src;
-    String tempDir;
-    int diagnosticMode = 1;
-    int plantID = 0;
+    	Mat src;
+    	String tempDir;
+    	int plantID = 0;
     
 	double h1[] = { 23, 22, 25, 25, 41, 37, 33, 37, 37, 48, 6, 9, 15, 17, 37, 39, 19, 18, 20, 12, 27, 25, 20, 24 }; //while db is not yet connected
     
-    if(diagnosticMode != 1){
-        
-        //CAPTURE MODE: Uses the camera setup for running the phenotyping algorithms
-        
-        //CaptureModule cp_instance;
-        //cp_instance.testCapture();
-        //src = cp_instance.getFrame();
-        
-        int plantHeight = 0; //hardcoded to 0 because height function is not integrated yet
-        
-        DatabaseAccess db_instance;
-        
-        Preprocessor pp_instance;
-        pp_instance.setSrc(src);
-        Mat wBal = pp_instance.whiteBal();
-        
-        tempDir = FILE_DIR_PREPROCESSING; //white-balance image output (for testing purposes)
-
-        tempDir.append(to_string(plantID));
-        tempDir.append("-wbal.JPG");
-        
-        imwrite(tempDir, wBal);
-        
-        db_instance.setPrepro_segment(tempDir);
-        
-        Mat  biomass_segment = pp_instance.bin_segment(wBal);
-        
-        tempDir = FILE_DIR_PREPROCESSING; //white-balance image output (for testing purposes)
-        
-        tempDir.append(to_string(plantID));
-        tempDir.append("-bin.JPG");
-        
-        imwrite(tempDir, biomass_segment);
-        
-        db_instance.setBiomass_segment(tempDir);
-        
-        Mat  green_segment = pp_instance.noisefilter(pp_instance.segment(wBal));
-        
-        Greenness g_instance;
-        
-        float greenval = g_instance.greenness(green_segment); //greenness float output
-        green_segment = g_instance.getResult();
-        
-        tempDir = FILE_DIR_GREENNESS; //white-balance image output (for testing purposes)
-        
-        tempDir.append(to_string(plantID));
-        tempDir.append("-rgb.JPG");
-        
-        imwrite(tempDir, green_segment);
-        
-        db_instance.setGreenness_segment(tempDir);
-        
-        //IMPORTANT: BEFORE RETRIEVING BIOMASS, BE SURE TO INTEGRATE THE HEIGHT ALGORITHM FROM SEIGHT
-        
-        Biomass b_instance;
-		int potPixelCount = 210;
-		double potActualInchDimension = 10;
-        
-        double aveWidth = b_instance.getPlantWidth(biomass_segment);
-		double biomassval = b_instance.computePlantBiomass(b_instance.convertPixelToCm(b_instance.computePlantRadius(aveWidth), potPixelCount, potActualInchDimension), h1[plantHeight - 1]);
-        cout << biomassval << endl;
-        
-        //HARDCODED HEIGHT AND TILLER VALUES, THIS WILL BE GONE WHEN INTEGRATION WITH SEIGHT IS FINISHED
-        double heightval = 0;
-        double tillerval = 0;
-        
-        db_instance.setValues(heightval, tillerval, greenval, aveWidth, biomassval);
-        db_instance.insertToDB();
-        
-    } else {
         
         //DIAGNOSTIC MODE: retrieves images from a directory.
-        //FOR DIAGNOSTICS ONLY. USE CAMERA SETUP IF POSSIBLE
         
         ofstream myfile, gfile;
         myfile.open("/Users/janvillarosa/git/web-butil/public/Phenotypic Images/radius.txt"); //FOR TESTING
@@ -200,18 +130,4 @@ int main(int argc, char *argv[]){
         gfile.close();
     }
     return 0;
-}
-
-void splitImage(Mat image){
-    Mat orig = image;
-    Rect roi(0, 0, orig.cols/2, orig.rows);
-    Rect roi_2(orig.cols/2, 0, orig.cols/2, orig.rows);
-    
-    Mat image_roi = orig(roi);
-    image_roi.copyTo(orig);
-    imwrite(FILE_DIR_SOURCE+"sample1", orig);
-    
-    image_roi = orig(roi_2);
-    image_roi.copyTo(orig);
-    imwrite(FILE_DIR_SOURCE+"sample2", orig);
 }

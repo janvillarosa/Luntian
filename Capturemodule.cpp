@@ -40,13 +40,6 @@ int main(void)
 	try {
 		std::vector<CameraStream*> cameras;
 
-		//Connect to camera
-		//string camera_username = "admin";
-		//string camera_password = "c4rice";
-		//string ipAddress = "192.168.0.20";
-
-		//CameraStream *camera = new CameraStream(camera_username, camera_password, ipAddress);
-
 		/* Create a connection */
 		sql::Driver *driver;
 		sql::Connection *con;

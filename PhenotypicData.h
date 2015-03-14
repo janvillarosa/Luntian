@@ -28,7 +28,6 @@ private:
 	double Biomass;
 
 public:
-	PhenotypicData(int image_id);
 	void insertToDatabase(sql::Connection *con);
 
 	void setHeight(double Height);
@@ -36,6 +35,13 @@ public:
 	void setGreeness(double Greeness);
 	void setDiameter(double Diameter);
 	void setBiomass(double Biomass);
+	void setImageID(int image_id);
+
+	double getHeight();
+	int getTillerCount();
+	double getGreeness();
+	double getDiameter();
+	double getBiomass();
 };
 
 #endif

@@ -1,29 +1,7 @@
-//THSST1 Prototype using OpenCV and C++ for pre-processing and
+//THSST Prototype using OpenCV and C++ for pre-processing and
 //determining the greenness of a plant specimen
 
-#include <fstream>
-#define _CRT_SECURE_NO_WARNINGS
-
-#include <math.h>
-#include <opencv/cv.h>
-#include <opencv/highgui.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <opencv2/imgproc/imgproc.hpp>
-
-using namespace cv;
-using namespace std;
-
-class Biomass {
-	Mat src;
-public:
-	double getPlantWidth(Mat);
-	double computePlantRadius(double);
-	double computePlantBiomass(double, double);
-	double computePixelToInchValue(int, double);
-	double convertPixelToCm(double, int, double);
-	void setSrc(Mat);
-};
+#include "Biomass.h"
 
 void Biomass::setSrc(Mat source){
 	src = source;
@@ -60,7 +38,7 @@ double Biomass::computePlantRadius(double diameter){
 }
 
 double Biomass::computePlantBiomass(double radius, double height){
-	return M_PI*radius*radius*height;
+	return 3.141593*radius*radius*height;
 }
 
 

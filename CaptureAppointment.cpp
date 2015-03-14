@@ -75,7 +75,7 @@
 		}
 	}
 
-
+	/*Create New Appointment if Interval is not Once*/
 	void Camera_Appointment::createNewAppointmentBasedFromInterval(sql::Connection *con){
 		sql::PreparedStatement  *prep_stmt;
 

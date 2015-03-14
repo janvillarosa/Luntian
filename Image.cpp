@@ -1,10 +1,25 @@
 #include "Image.h"
 
-Image::Image(int plant_id, string date_taken, string plant_stage, string raw_path){
+Image::Image(Mat img, int plant_id, string date_taken, string plant_stage, string raw_path){
+	String height_path = raw_path;
+	String tiller_path = raw_path;
+	String greenness_path = raw_path;
+	String biomass_path = raw_path;
+	raw_path.append(".jpg");
+	height_path.append("-height.jpg");
+	tiller_path.append("-tiller.jpg");
+	greenness_path.append("-greenness.jpg");
+	biomass_path.append("-biomass.jpg");
+
+	this->img = img;
 	this->plant_id = plant_id;
 	this->date_taken = date_taken;
 	this->plant_stage = plant_stage;
 	this->raw_path = raw_path;
+	this->processed_height_path = height_path;
+	this->processed_tiller_path = tiller_path;
+	this->processed_greenness_path = greenness_path;
+	this->processed_biomass_path = biomass_path;
 }
 
 void Image::insertToDatabase(sql::Connection *con){
@@ -18,27 +33,29 @@ void Image::insertToDatabase(sql::Connection *con){
 	prep_stmt->setString(5, this->raw_path);
 	prep_stmt->setString(6, this->processed_height_path);
 	prep_stmt->setString(7, this->processed_tiller_path);
-	prep_stmt->setString(8, this->processed_greeness_path);
+	prep_stmt->setString(8, this->processed_greenness_path);
 	prep_stmt->setString(9, this->processed_biomass_path);
 	prep_stmt->execute();
 
 	delete prep_stmt;
 }
 
-//SETTERS
-void Image::setHeightPath(string path){
-	processed_height_path = path;
+//GETTERS
+String Image::getHeightPath(){
+	return this->processed_height_path;
 }
-void Image::setTillerPath(string path){
-	processed_tiller_path = path;
+String Image::getTillerPath(){
+	return this->processed_tiller_path;
 }
-void Image::setGreenPath(string path){
-	processed_greeness_path = path;
+String Image::getGreennessPath(){
+	return this->processed_greenness_path;
 }
-void Image::setBiomassPath(string path){
-	processed_biomass_path = path;
+String Image::getBiomassPath(){
+	return this->processed_biomass_path;
 }
-
-string Image::getRawPath(){
+String Image::getRawPath(){
 	return this->raw_path;
+}
+Mat Image::getImage(){
+	return this->img;
 }

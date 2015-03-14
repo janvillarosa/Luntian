@@ -1,9 +1,5 @@
 #include "PhenotypicData.h"
 
-PhenotypicData::PhenotypicData(int image_id){
-	this->image_id = image_id;
-}
-
 void PhenotypicData::insertToDatabase(sql::Connection *con){
 	sql::PreparedStatement  *prep_stmt;
 
@@ -19,7 +15,7 @@ void PhenotypicData::insertToDatabase(sql::Connection *con){
 	delete prep_stmt;
 }
 
-//SETTERS
+//SETTERS AND GETTERS
 void PhenotypicData::setHeight(double Height){
 	this->Height = Height;
 }
@@ -34,5 +30,24 @@ void PhenotypicData::setDiameter(double Diameter){
 }
 void PhenotypicData::setBiomass(double Biomass){
 	this->Biomass = Biomass;
+}
+void PhenotypicData::setImageID(int image_id){
+	this->image_id = image_id;
+}
+
+double PhenotypicData::getHeight(){
+	return this->Height;
+}
+int PhenotypicData::getTillerCount(){
+	return this->Tiller_Count;
+}
+double PhenotypicData::getGreeness(){
+	return this->Greeness;
+}
+double PhenotypicData::getDiameter(){
+	return this->Diameter;
+}
+double PhenotypicData::getBiomass(){
+	return this->Biomass;
 }
 

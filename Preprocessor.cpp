@@ -1,30 +1,7 @@
-//THSST1 Prototype using OpenCV and C++ for pre-processing and
+//THSST Prototype using OpenCV and C++ for pre-processing and
 //determining the greenness of a plant specimen
 
-#include <math.h>
-#include <opencv/cv.h>
-#include <opencv/highgui.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <opencv2/imgproc/imgproc.hpp>
-
-using namespace cv;
-
-class Preprocessor{
-    Mat src;
-    int imgRow;
-    int imgCol;
-    
-    public:
-        Mat segment(Mat);
-        Mat noisefilter(Mat);
-        Mat whiteBal();
-        void setSrc(Mat);
-        Mat cropImage(Mat);
-        Mat bin_segment(Mat);
-        Mat rgb_segment(Mat, Mat);
-        Mat cropRGBImage(Mat);
-};
+#include "Preprocessor.h"
 
 void Preprocessor::setSrc(Mat source){
     src=source;
