@@ -7,7 +7,7 @@ void PhenotypicData::insertToDatabase(sql::Connection *con){
 	prep_stmt->setInt(1, this->image_id);
 	prep_stmt->setDouble(2, this->Height);
 	prep_stmt->setInt(3, this->Tiller_Count);
-	prep_stmt->setDouble(4, this->Greeness);
+	prep_stmt->setDouble(4, this->Greenness);
 	prep_stmt->setDouble(5, this->Diameter);
 	prep_stmt->setDouble(6, this->Biomass);
 	prep_stmt->execute();
@@ -22,8 +22,8 @@ void PhenotypicData::setHeight(double Height){
 void PhenotypicData::setTillerCount(int Tiller_Count){
 	this->Tiller_Count = Tiller_Count;
 }
-void PhenotypicData::setGreeness(double Greeness){
-	this->Greeness = Greeness;
+void PhenotypicData::setGreenness(double Greeness){
+	this->Greenness = Greeness;
 }
 void PhenotypicData::setDiameter(double Diameter){
 	this->Diameter = Diameter;
@@ -42,7 +42,7 @@ int PhenotypicData::getTillerCount(){
 	return this->Tiller_Count;
 }
 double PhenotypicData::getGreeness(){
-	return this->Greeness;
+	return this->Greenness;
 }
 double PhenotypicData::getDiameter(){
 	return this->Diameter;

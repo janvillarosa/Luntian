@@ -1,11 +1,11 @@
 #include "Image.h"
 
-Image::Image(Mat img, int plant_id, string date_taken, string plant_stage, string raw_path){
-	String height_path = raw_path;
-	String tiller_path = raw_path;
-	String greenness_path = raw_path;
-	String biomass_path = raw_path;
-	raw_path.append(".jpg");
+Image::Image(Mat img, int plant_id, string date_taken, string plant_stage, string image_name){
+	String height_path = image_name;
+	String tiller_path = image_name;
+	String greenness_path = image_name;
+	String biomass_path = image_name;
+	image_name.append(".jpg");
 	height_path.append("-height.jpg");
 	tiller_path.append("-tiller.jpg");
 	greenness_path.append("-greenness.jpg");

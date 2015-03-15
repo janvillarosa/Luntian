@@ -39,7 +39,7 @@ private:
 	string processed_biomass_path;
 
 public:
-	Image(Mat img, int plant_id, string date_taken, string plant_stage, string raw_path);
+	Image(Mat img, int plant_id, string date_taken, string plant_stage, string image_name);
 	void insertToDatabase(sql::Connection *con);
 
 	string getRawPath();

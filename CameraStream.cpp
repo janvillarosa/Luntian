@@ -1,10 +1,6 @@
 
-#include "Preprocessor.h"
-#include "Greenness.h"
-#include "Biomass.h"
 #include "CameraStream.h"
-#include "Image.h"
-#include "PhenotypicData.h"
+
 #include <thread>
 
 //pointing pointing to web image directory
@@ -18,8 +14,8 @@ CameraStream::CameraStream(int camera_id, string camera_username, string camera_
 	this->ipAddress = ipAddress;
 }
 
-//Image Processing Thread
-void processImage(Image* img, sql::Connection *con){
+//Image Processing function
+void CameraStream::processImage(Image* img, sql::Connection *con){
 	sql::Statement *stmt = con->createStatement();
 	sql::ResultSet *res;
 
@@ -45,7 +41,7 @@ void processImage(Image* img, sql::Connection *con){
 
 	float greenval = g_instance.greenness(green_segment); //greenness float output
 
-	data->setGreeness(greenval);//Set greenness value for database
+	data->setGreenness(greenval);//Set greenness value for database
 
 	green_segment = g_instance.getResult();
 
@@ -83,6 +79,7 @@ void CameraStream::checkAppointment(sql::Connection *con){
 		if (next_appointment != NULL){
 			if (next_appointment->checkIfPastCurrentTime()){
 				/*EXECUTE CAPTURE*/
+				Mat frame;
 				VideoCapture cap("http://" + camera_username + ":" + camera_password + "@" + ipAddress + "/image/jpeg.cgi?user=" + camera_username + "&password=" + camera_password + "&channel=0&.jpeg");//Video capture url
 
 				if (cap.isOpened()){
@@ -192,4 +189,8 @@ void CameraStream::checkNextAppointment(sql::Connection *con){
 		}
 	}
 	delete res;
+}
+
+int CameraStream::getCameraID(){
+	return this->camera_id;
 }

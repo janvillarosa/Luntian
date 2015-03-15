@@ -23,7 +23,7 @@ private:
 	int image_id;
 	double Height;
 	int Tiller_Count;
-	double Greeness;
+	double Greenness;
 	double Diameter;
 	double Biomass;
 
@@ -32,7 +32,7 @@ public:
 
 	void setHeight(double Height);
 	void setTillerCount(int Tiller_Count);
-	void setGreeness(double Greeness);
+	void setGreenness(double Greenness);
 	void setDiameter(double Diameter);
 	void setBiomass(double Biomass);
 	void setImageID(int image_id);

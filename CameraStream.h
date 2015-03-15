@@ -23,8 +23,11 @@
 #include "cppconnection/prepared_statement.h"
 
 #include "CaptureAppointment.h"
-
+#include "PhenotypicData.h"
 #include "Image.h"
+#include "Preprocessor.h"
+#include "Greenness.h"
+#include "Biomass.h"
 
 using namespace cv;
 using namespace std;
@@ -38,13 +41,15 @@ private://Atrributes
 	string camera_username;
 	string camera_password;
 
-	Mat frame;
 	Camera_Appointment *next_appointment = NULL;
 
 public://Methods
 	CameraStream(int camera_id, string camera_username, string camera_password, string ipAddress);
+	void processImage(Image* img, sql::Connection *con);
 	void checkAppointment(sql::Connection *con);
 	void checkNextAppointment(sql::Connection *con);
+
+	int getCameraID();
 };
 
 #endif

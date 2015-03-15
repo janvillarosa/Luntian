@@ -20,7 +20,6 @@
 #include "cppconnection/prepared_statement.h"
 
 // Capture Appointment Object
-#include "CaptureAppointment.h"
 #include "CameraStream.h"
 
 // Link to the Connector/C++ library
@@ -56,8 +55,8 @@ int main(void)
 
 		res = stmt->executeQuery(select_all_camera);
 		while (res->next()){
-			cout << "Camera " << res->getInt("ID") << " properties retrieved" << endl;
 			cameras.push_back(new CameraStream(res->getInt("ID"), res->getString("Username"), res->getString("Password"), res->getString("IP_Address")));
+			cout << "Camera " << res->getInt("ID") << " properties retrieved" << endl;
 		}
 
 		delete res;
@@ -75,6 +74,22 @@ int main(void)
 			}
 
 			if (curr_time - prev_time >= 10){
+				//Check New Cameras
+				res = stmt->executeQuery(select_all_camera);
+				while (res->next()){
+					int found = 0;
+					int cameraId = res->getInt("ID");
+					for (i = 0; i < cameras.size(); i++){
+						if (cameras[i]->getCameraID() == cameraId)
+							found = 1;
+					}
+					if (!found){
+						cameras.push_back(new CameraStream(res->getInt("ID"), res->getString("Username"), res->getString("Password"), res->getString("IP_Address")));
+						cout << "Camera " << res->getInt("ID") << " properties retrieved" << endl;
+					}
+				}
+
+				//Check New Appointments
 				for (i = 0; i < cameras.size(); i++){
 					cameras[i]->checkNextAppointment(con);
 				}
