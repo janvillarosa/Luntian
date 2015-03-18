@@ -15,7 +15,7 @@ Image::Image(Mat img, int plant_id, string date_taken, string plant_stage, strin
 	this->plant_id = plant_id;
 	this->date_taken = date_taken;
 	this->plant_stage = plant_stage;
-	this->raw_path = raw_path;
+	this->raw_path = image_name;
 	this->processed_height_path = height_path;
 	this->processed_tiller_path = tiller_path;
 	this->processed_greenness_path = greenness_path;
