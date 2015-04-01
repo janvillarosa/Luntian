@@ -27,7 +27,8 @@ int main(int argc, char *argv[]){
     	String tempDir;
     	int plantID = 0;
     
-	double h1[] = { 23, 22, 25, 25, 41, 37, 33, 37, 37, 48, 6, 9, 15, 17, 37, 39, 19, 18, 20, 12, 27, 25, 20, 24 }; //while db is not yet connected
+	//double h1[] = { 23, 22, 25, 25, 41, 37, 33, 37, 37, 48, 6, 9, 15, 17, 37, 39, 19, 18, 20, 12, 27, 25, 20, 24 }; //while db is not yet connected
+    double h1[] = { 49, 49.5, 55, 59.5, 64.5, 65, 85, 63.5, 67.5, 93, 90.5, 76, 74.5, 81, 79.5, 73, 78, 72.5, 104.5, 79.5, 101, 59, 77, 90.5, 72.5, 83, 100.5, 82 };
     
         
         //DIAGNOSTIC MODE: retrieves images from a directory.
