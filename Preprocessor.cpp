@@ -34,7 +34,7 @@ Mat Preprocessor::rgb_segment(Mat imgThreshold, Mat im){
         int G=hsv.val[1];
         int R=hsv.val[2];
         
-        if((B >= 80 && R >= 50)){
+        if((B >= 80 && R >= 80)){
            *it = Vec3b(255,255,255);
         } else {
         }
@@ -43,7 +43,7 @@ Mat Preprocessor::rgb_segment(Mat imgThreshold, Mat im){
 }
 
 Mat Preprocessor::bin_segment(Mat wBal){
-	Rect roi(wBal.cols / 4, (wBal.rows / 5) * 4, wBal.cols / 2, wBal.rows / 9); //Updated but still for improvement
+	Rect roi(wBal.cols / 4, (wBal.rows / 5) * 4, wBal.cols / 2, wBal.rows / 14); //Updated but still for improvement
     Mat src_roi = wBal(roi);
     src_roi.copyTo(wBal);
     
@@ -61,6 +61,18 @@ Mat Preprocessor::segment(Mat im){
     
     cvtColor(image,image,CV_RGB2GRAY);
     
+//    int iLowH = 50;
+//    int iHighH = 90;
+//    
+//    int iLowS = 0;
+//    int iHighS = 255;
+//    
+//    int iLowV = 0;
+//    int iHighV = 255;
+//    
+//    
+//    inRange(image, Scalar(iLowH, iLowS, iLowV), Scalar(iHighH, iHighS, iHighV), imgThresholded); //Threshold the image
+//    bitwise_not(imgThresholded, imgThresholded);
     
     threshold(image, imgThresholded, 190, 255, THRESH_OTSU);
     
@@ -95,7 +107,7 @@ Mat Preprocessor::whiteBal(){
     Mat image = src;
     Mat rgbim;
     
-    Rect roi(0, 0, image.cols, image.rows-40); //Updated for scalability
+    Rect roi(0, 0, image.cols, image.rows-65); //Updated for scalability
     Mat image_roi = image(roi);
     image_roi.copyTo(rgbim);
     
@@ -141,7 +153,6 @@ Mat Preprocessor::cropRGBImage(Mat image){
         
         i++;
     }
-    
     imgCol=i;
     imgRow=(image.rows-i)/4 + (image.rows-i)/4 + (image.rows-i)/4;
     
