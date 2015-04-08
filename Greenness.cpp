@@ -165,31 +165,32 @@ float Greenness::greenness(Mat im){
         }
     }
     
-    float lccval = compareLCCValues(aveH/pixelct,aveS/pixelct,aveV/pixelct);
-    lccval = floor(lccval * 1000.0) / 1000.0;
-    
-    
-    cvtColor(image, image, CV_HSV2BGR);
-    
-    char name[30];
-    sprintf(name,"Average H=%d",aveH/pixelct);
-    putText(image,name, Point(10,20) , FONT_HERSHEY_SIMPLEX, .5, Scalar(0,0,0), 2,8,false );
-    
-    sprintf(name,"Average S=%d",aveS/pixelct);
-    putText(image,name, Point(10,50) , FONT_HERSHEY_SIMPLEX, .5, Scalar(0,0,0), 2,8,false );
-    
-    sprintf(name,"Average V=%d",aveV/pixelct);
-    putText(image,name, Point(10,80) , FONT_HERSHEY_SIMPLEX, .5, Scalar(0,0,0), 2,8,false );
-    
-    sprintf(name,"Pixels=%d",pixelct);
-    putText(image,name, Point(10,110) , FONT_HERSHEY_SIMPLEX, .5, Scalar(0,0,0), 2,8,false );
-    
-    sprintf(name,"LCC Value: %.1f", lccval);
-    putText(image,name, Point(10,140) , FONT_HERSHEY_SIMPLEX, .5, Scalar(0,0,0), 2,8,false );
-    
-    rectangle(image, Point(10,150), Point(30,170), HSVtoRGBcvScalar(aveH/pixelct, aveS/pixelct, aveV/pixelct),CV_FILLED);
-    
-    result = image;
+    float lccval = 0;
+//    lccval = compareLCCValues(aveH/pixelct,aveS/pixelct,aveV/pixelct);
+//    lccval = floor(lccval * 1000.0) / 1000.0;
+//    
+//    
+//    cvtColor(image, image, CV_HSV2BGR);
+//    
+//    char name[30];
+//    sprintf(name,"Average H=%d",aveH/pixelct);
+//    putText(image,name, Point(10,20) , FONT_HERSHEY_SIMPLEX, .5, Scalar(0,0,0), 2,8,false );
+//    
+//    sprintf(name,"Average S=%d",aveS/pixelct);
+//    putText(image,name, Point(10,50) , FONT_HERSHEY_SIMPLEX, .5, Scalar(0,0,0), 2,8,false );
+//    
+//    sprintf(name,"Average V=%d",aveV/pixelct);
+//    putText(image,name, Point(10,80) , FONT_HERSHEY_SIMPLEX, .5, Scalar(0,0,0), 2,8,false );
+//    
+//    sprintf(name,"Pixels=%d",pixelct);
+//    putText(image,name, Point(10,110) , FONT_HERSHEY_SIMPLEX, .5, Scalar(0,0,0), 2,8,false );
+//    
+//    sprintf(name,"LCC Value: %.1f", lccval);
+//    putText(image,name, Point(10,140) , FONT_HERSHEY_SIMPLEX, .5, Scalar(0,0,0), 2,8,false );
+//    
+//    rectangle(image, Point(10,150), Point(30,170), HSVtoRGBcvScalar(aveH/pixelct, aveS/pixelct, aveV/pixelct),CV_FILLED);
+//    
+//    result = image;
     
     return lccval;
     
